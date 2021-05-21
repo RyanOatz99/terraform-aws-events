@@ -82,7 +82,6 @@ def transformLogEvent(log_event, source):
             the environment variable contents of SPLUNK_SOURCETYPE for all other cases
     """
     return_event = {}
-    return_event['sourcetype'] = 'aws:cloudwatchlogs:log'
     return_event['source'] = source
     return_event['event'] = log_event['message']
     return json.dumps(return_event) + '\n'

@@ -87,6 +87,16 @@ data "aws_iam_policy_document" "firehose_backup_s3_access" {
     }
   }
   dynamic "statement" {
+    for_each = aws_kinesis_firehose_delivery_stream.linux_audit_cloudwatchlogs_firehose
+
+    content {
+      sid       = "AllowKinesisDeliveryStreamAccessLACWLogs"
+      actions   = ["*"]
+      effect    = "Allow"
+      resources = [aws_kinesis_firehose_delivery_stream.linux_audit_cloudwatchlogs_firehose[0].arn]
+    }
+  }
+  dynamic "statement" {
     for_each = aws_kinesis_firehose_delivery_stream.vpcflowlogs_firehose
 
     content {
@@ -205,10 +215,8 @@ data "aws_iam_policy_document" "firehose_delivery_access" {
       resources = [aws_kinesis_firehose_delivery_stream.vpcflowlogs_firehose[0].arn]
     }
   }
-
   dynamic "statement" {
     for_each = aws_kinesis_firehose_delivery_stream.cloudwatchlogs_firehose
-
     content {
       actions = [
         "firehose:PutRecord",
@@ -217,6 +225,18 @@ data "aws_iam_policy_document" "firehose_delivery_access" {
       sid       = "AllowKinesisDeliveryStreamAccessCWLogs"
       effect    = "Allow"
       resources = [aws_kinesis_firehose_delivery_stream.cloudwatchlogs_firehose[0].arn]
+    }
+  }
+  dynamic "statement" {
+    for_each = aws_kinesis_firehose_delivery_stream.linux_audit_cloudwatchlogs_firehose
+    content {
+      actions = [
+        "firehose:PutRecord",
+        "firehose:PutRecordBatch"
+      ]
+      sid       = "AllowKinesisDeliveryStreamAccessLACWLogs"
+      effect    = "Allow"
+      resources = [aws_kinesis_firehose_delivery_stream.linux_audit_cloudwatchlogs_firehose[0].arn]
     }
   }
 }
@@ -476,4 +496,60 @@ resource "aws_iam_role_policy_attachment" "vpcflow_cloudwatch" {
   count      = var.vpcflowlogs_rules == "true" ? 1 : 0
   role       = aws_iam_role.vpcflowlogs_to_cloudwatch_trust[0].name
   policy_arn = aws_iam_policy.vpcflowlogs_cloudwatch_access_policy[0].arn
+}
+
+resource "aws_iam_role" "linux_audit_cloudwatch_to_firehose_trust" {
+  count       = var.linux_audit_cloudwatchlogs_rules == "true" ? 1 : 0
+  name        = "${var.name}-LACWLtoKinesisFirehoseRole"
+  description = "Role for Linux Audit CloudWatch Log Group subscription"
+
+  assume_role_policy = data.aws_iam_policy_document.linux_audit_cloudwatchlogs_firehose_assume[0].json
+}
+
+data "aws_iam_policy_document" "linux_audit_cloudwatchlogs_firehose_assume" {
+  count = var.linux_audit_cloudwatchlogs_rules == "true" ? 1 : 0
+  statement {
+    sid     = "AllowLACloudWatchLogsAssumeRole"
+    actions = ["sts:AssumeRole"]
+    effect  = "Allow"
+    principals {
+      identifiers = ["logs.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+}
+
+data "aws_iam_policy_document" "linux_audit_cloudwatch_to_firehose_access_policy" {
+  count = var.linux_audit_cloudwatchlogs_rules == "true" ? 1 : 0
+  statement {
+    actions = [
+      "firehose:*",
+    ]
+    effect = "Allow"
+    resources = [
+      aws_kinesis_firehose_delivery_stream.linux_audit_cloudwatchlogs_firehose[0].arn,
+    ]
+  }
+  statement {
+    actions = [
+      "iam:PassRole",
+    ]
+    effect = "Allow"
+    resources = [
+      aws_iam_role.linux_audit_cloudwatch_to_firehose_trust[0].arn,
+    ]
+  }
+}
+
+resource "aws_iam_policy" "linux_audit_cloudwatch_to_firehose_access_policy" {
+  count       = var.linux_audit_cloudwatchlogs_rules == "true" ? 1 : 0
+  name        = "${var.name}LACloudWatchtoFirehoseAccess"
+  description = "linux audit Cloudwatch to Firehose Subscription Policy"
+  policy      = data.aws_iam_policy_document.linux_audit_cloudwatch_to_firehose_access_policy[0].json
+}
+
+resource "aws_iam_role_policy_attachment" "linux_audit_cloudwatch_to_firehose" {
+  count      = var.linux_audit_cloudwatchlogs_rules == "true" ? 1 : 0
+  role       = aws_iam_role.linux_audit_cloudwatch_to_firehose_trust[0].name
+  policy_arn = aws_iam_policy.linux_audit_cloudwatch_to_firehose_access_policy[0].arn
 }
