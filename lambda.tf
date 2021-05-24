@@ -67,11 +67,11 @@ resource "aws_lambda_function" "vpcflowlogs_processor" {
 
 resource "aws_lambda_function" "linux_audit_cloudwatchlogs_processor" {
   count            = var.linux_audit_cloudwatchlogs_rules == "true" ? 1 : 0
-  filename         = "${path.module}/files/cloudwatchlogs_processor.zip"
-  function_name    = "${var.name}-CloudWatchlogs-Processor"
+  filename         = "${path.module}/files/linux_audit_cloudwatchlogs_processor.zip"
+  function_name    = "${var.name}-linux-audit-CloudWatchlogs-Processor"
   role             = aws_iam_role.events_processor.arn
-  handler          = "cloudwatchlogs_processor.handler"
-  source_code_hash = filebase64sha256("${path.module}/files/cloudwatchlogs_processor.zip")
+  handler          = "linux_audit_cloudwatchlogs_processor.handler"
+  source_code_hash = filebase64sha256("${path.module}/files/linux_audit_cloudwatchlogs_processor.zip")
   runtime          = "python3.7"
   timeout          = 300
   memory_size      = 512
