@@ -285,6 +285,12 @@ variable "linux_audit_cloudwatchlogs_hec_token" {
   type        = string
 }
 
+variable "linux_syslog_cloudwatchlogs_hec_token" {
+  description = "Linux syslog CloudWatchLogs HEC Token for use with Splunk Endpoint"
+  default     = ""
+  type        = string
+}
+
 variable "test_splunk_endpoint" {
   description = "Endpoint address for Test Splunk Instance"
   default     = ""
@@ -298,6 +304,17 @@ variable "linux_audit_cloudwatch_logs_to_ship" {
 }
 
 variable "linux_audit_cloudwatchlogs_rules" {
+  description = "True if the cloudwatchlogs Rules should be enabled."
+  default     = "false"
+  type        = string
+}
+variable "linux_syslog_cloudwatch_logs_to_ship" {
+  description = "Linux Audit CloudWatch Log Groups"
+  default     = []
+  type        = list(string)
+}
+
+variable "linux_syslog_cloudwatchlogs_rules" {
   description = "True if the cloudwatchlogs Rules should be enabled."
   default     = "false"
   type        = string
