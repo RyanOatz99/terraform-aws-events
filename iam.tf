@@ -571,10 +571,10 @@ resource "aws_iam_policy" "linux_audit_cloudwatch_to_firehose_access_policy" {
   policy      = data.aws_iam_policy_document.linux_audit_cloudwatch_to_firehose_access_policy[0].json
 }
 
-resource "aws_iam_role_policy_attachment" "linux_syslog_cloudwatch_to_firehose" {
-  count      = var.linux_syslog_cloudwatchlogs_rules == "true" ? 1 : 0
-  role       = aws_iam_role.linux_syslog_cloudwatch_to_firehose_trust[0].name
-  policy_arn = aws_iam_policy.linux_syslog_cloudwatch_to_firehose_access_policy[0].arn
+resource "aws_iam_role_policy_attachment" "linux_audit_cloudwatch_to_firehose" {
+  count      = var.linux_audit_cloudwatchlogs_rules == "true" ? 1 : 0
+  role       = aws_iam_role.linux_audit_cloudwatch_to_firehose_trust[0].name
+  policy_arn = aws_iam_policy.linux_audit_cloudwatch_to_firehose_access_policy[0].arn
 }
 
 resource "aws_iam_role" "linux_syslog_cloudwatch_to_firehose_trust" {
