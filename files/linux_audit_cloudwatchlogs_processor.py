@@ -80,11 +80,15 @@ def transformLogEvent(log_event, source):
             aws:cloudtrail if the Log Group name contains CloudTrail
             aws:cloudwatchlogs:vpcflow if the Log Group name contains VPC
             the environment variable contents of SPLUNK_SOURCETYPE for all other cases
-    """
+
     return_event = {}
     return_event['source'] = source
     return_event['event'] = log_event['message']
     return json.dumps(return_event) + '\n'
+    """
+
+    return log_event['message'] + '\n'
+
 
 def processRecords(records):
     for r in records:
