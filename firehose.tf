@@ -370,3 +370,58 @@ resource "aws_cloudwatch_log_stream" "linux_audit_cloudwatchlogs_firehose" {
   log_group_name = aws_cloudwatch_log_group.linux_audit_cloudwatchlogs_firehose[0].name
   name           = var.name
 }
+
+resource "aws_kinesis_firehose_delivery_stream" "linux_syslog_cloudwatchlogs_firehose" {
+  count       = var.linux_syslog_cloudwatchlogs_rules == "true" ? 1 : 0
+  name        = "${var.name}.linux_syslog_cloudwatchlogs"
+  destination = "splunk"
+
+  s3_configuration {
+    bucket_arn = aws_s3_bucket.events_firehose_backups.arn
+    role_arn   = aws_iam_role.firehose_backup_s3.arn
+    //    kms_key_arn = aws_kms_key.events_firehose_backups.arn
+
+    cloudwatch_logging_options {
+      enabled         = true
+      log_group_name  = aws_cloudwatch_log_group.linux_syslog_cloudwatchlogs_firehose[0].name
+      log_stream_name = aws_cloudwatch_log_stream.linux_syslog_cloudwatchlogs_firehose[0].name
+    }
+  }
+
+  splunk_configuration {
+    hec_endpoint      = var.test_splunk_endpoint
+    hec_token         = var.linux_syslog_cloudwatchlogs_hec_token
+    hec_endpoint_type = "Raw"
+    s3_backup_mode    = "FailedEventsOnly"
+
+    processing_configuration {
+      enabled = "true"
+
+      processors {
+        type = "Lambda"
+
+        parameters {
+          parameter_name  = "LambdaArn"
+          parameter_value = "${aws_lambda_function.linux_syslog_cloudwatchlogs_processor[0].arn}:$LATEST"
+        }
+
+        parameters {
+          parameter_name  = "RoleArn"
+          parameter_value = aws_iam_role.events_processor.arn
+        }
+
+      }
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_group" "linux_syslog_cloudwatchlogs_firehose" {
+  count = var.linux_syslog_cloudwatchlogs_rules == "true" ? 1 : 0
+  name  = "/linux-syslog-cloudwatchlogs-firehose/"
+}
+
+resource "aws_cloudwatch_log_stream" "linux_syslog_cloudwatchlogs_firehose" {
+  count          = var.linux_syslog_cloudwatchlogs_rules == "true" ? 1 : 0
+  log_group_name = aws_cloudwatch_log_group.linux_syslog_cloudwatchlogs_firehose[0].name
+  name           = var.name
+}
