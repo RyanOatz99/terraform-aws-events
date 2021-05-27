@@ -334,7 +334,7 @@ resource "aws_kinesis_firehose_delivery_stream" "linux_audit_cloudwatchlogs_fire
   }
 
   splunk_configuration {
-    hec_endpoint      = var.test_splunk_endpoint
+    hec_endpoint      = var.splunk_endpoint
     hec_token         = var.linux_audit_cloudwatchlogs_hec_token
     hec_endpoint_type = "Raw"
     s3_backup_mode    = "FailedEventsOnly"
@@ -389,7 +389,7 @@ resource "aws_kinesis_firehose_delivery_stream" "linux_syslog_cloudwatchlogs_fir
   }
 
   splunk_configuration {
-    hec_endpoint      = var.test_splunk_endpoint
+    hec_endpoint      = var.splunk_endpoint
     hec_token         = var.linux_syslog_cloudwatchlogs_hec_token
     hec_endpoint_type = "Raw"
     s3_backup_mode    = "FailedEventsOnly"
