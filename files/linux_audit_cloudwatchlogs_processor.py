@@ -86,9 +86,7 @@ def transformLogEvent(log_event, source):
     return_event['event'] = log_event['message']
     return json.dumps(return_event) + '\n'
     """
-
     return log_event['message'] + '\n'
-
 
 def processRecords(records):
     for r in records:
