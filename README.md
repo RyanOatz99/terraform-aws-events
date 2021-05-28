@@ -60,6 +60,18 @@ modules_[AWS_ACCOUNT_NAME].tf
     cloudwatch_logs_to_ship = []
     }
 
+    #Linux Audit Cloudwatch Log Groups
+    linux_audit_cloudwatch_logs_to_ship = []
+    }
+
+    #Linux Syslog Cloudwatch Log Groups
+    linux_syslog_cloudwatch_logs_to_ship = []
+    }
+
+    #metadataserver Cloudwatch Log Groups
+    metadataserver_cloudwatch_logs_to_ship = []
+    }
+
 In addition, usage of the module may require:
 * A custom provider with an alias
         
@@ -106,7 +118,25 @@ In addition, usage of the module may require:
             default     = "[CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
             type        = string
         }
-        
+
+        variable "metadataserver_cloudwatchlogs_hec_token" {
+            description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
+            default     = "[METADATASERVER_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
+            type        = string
+        }
+
+        variable "linux_auditcloudwatchlogs_hec_token" {
+            description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
+            default     = "[LINUX_AUDIT_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
+            type        = string
+        }
+
+        variable "linux_syslog_cloudwatchlogs_hec_token" {
+            description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
+            default     = "[LINUX_SYSLOG_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
+            type        = string
+        }
+  
         variable "splunk_endpoint" {
             description = "The Splunk Endpoint URI"
             default     = "[SPUNK_ENDPOINT_HTTPS_ADDRESS]"
@@ -152,6 +182,24 @@ securityhub_hec_token
     type        = string
 
 cloudwatchlogs_hec_token
+-
+    CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
+    default     = ""<br>
+    type        = string
+
+metadataserver_cloudwatchlogs_hec_token
+-
+    CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
+    default     = ""<br>
+    type        = string
+
+linux_audit_cloudwatchlogs_hec_token
+-
+    CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
+    default     = ""<br>
+    type        = string
+
+linux_audit_cloudwatchlogs_hec_token
 -
     CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
     default     = ""<br>
@@ -391,3 +439,71 @@ VPC Flow Logs Variables
     default     = "$${version} $${account-id} $${interface-id} $${srcaddr} $${dstaddr} $${srcport} $${dstport} $${protocol} $${packets} $${bytes} $${start} $${end} $${action} $${log-status} $${vpc-id}" // nothing is being filtered
     }
 
+CloudWatch Syslog Log Group Variables
+-
+    variable "linux_syslog_cloudwatch_logs_to_ship" {
+    description = "Linux Syslog CloudWatch Log Groups"
+    default = ["",""]
+    type = list(string)
+    }
+
+    variable "subscription_filter_pattern" {
+    description = "Filter pattern for the CloudWatch Log Group subscription to the Kinesis Firehose. See [this](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html) for filter pattern info."
+    default     = "" # nothing is being filtered
+    }
+
+    variable "cloudwatch_log_filter_name" {
+    description = "Name of Log Filter for CloudWatch Log subscription to Kinesis Firehose"
+    default     = "KinesisSubscriptionFilter"
+    }
+
+    variable "log_stream_name" {
+    description = "Name of the CloudWatch log stream for Kinesis Firehose CloudWatch log group"
+    default     = "SplunkDelivery"
+    }
+
+Linux Audit CloudWatch Log Group Variables
+-
+    variable "linux_audit_cloudwatch_logs_to_ship" {
+    description = "CloudWatch Log Groups"
+    default = ["",""]
+    type = list(string)
+    }
+
+    variable "subscription_filter_pattern" {
+    description = "Filter pattern for the CloudWatch Log Group subscription to the Kinesis Firehose. See [this](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html) for filter pattern info."
+    default     = "" # nothing is being filtered
+    }
+
+    variable "cloudwatch_log_filter_name" {
+    description = "Name of Log Filter for CloudWatch Log subscription to Kinesis Firehose"
+    default     = "KinesisSubscriptionFilter"
+    }
+
+    variable "log_stream_name" {
+    description = "Name of the CloudWatch log stream for Kinesis Firehose CloudWatch log group"
+    default     = "SplunkDelivery"
+    }
+
+Metadataserver CloudWatch Log Group Variables
+-
+    variable "metadataserver_cloudwatch_logs_to_ship" {
+    description = "CloudWatch Log Groups"
+    default = ["",""]
+    type = list(string)
+    }
+
+    variable "subscription_filter_pattern" {
+    description = "Filter pattern for the CloudWatch Log Group subscription to the Kinesis Firehose. See [this](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html) for filter pattern info."
+    default     = "" # nothing is being filtered
+    }
+
+    variable "cloudwatch_log_filter_name" {
+    description = "Name of Log Filter for CloudWatch Log subscription to Kinesis Firehose"
+    default     = "KinesisSubscriptionFilter"
+    }
+
+    variable "log_stream_name" {
+    description = "Name of the CloudWatch log stream for Kinesis Firehose CloudWatch log group"
+    default     = "SplunkDelivery"
+    }
