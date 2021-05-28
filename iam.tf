@@ -707,6 +707,6 @@ resource "aws_iam_policy" "metadataserver_cloudwatch_to_firehose_access_policy" 
 
 resource "aws_iam_role_policy_attachment" "metadataserver_cloudwatch_to_firehose" {
   count      = var.metadataserver_cloudwatchlogs_rules == "true" ? 1 : 0
-  role       = aws_iam_role.linux_syslog_cloudwatch_to_firehose_trust[0].name
-  policy_arn = aws_iam_policy.linux_syslog_cloudwatch_to_firehose_access_policy[0].arn
+  role       = aws_iam_role.metadataserver_cloudwatch_to_firehose_trust[0].name
+  policy_arn = aws_iam_policy.metadataserver_cloudwatch_to_firehose_access_policy[0].arn
 }
