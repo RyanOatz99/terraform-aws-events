@@ -1,50 +1,3 @@
-"""
-For processing data sent to Firehose by Cloudwatch Logs subscription filters.
-
-Cloudwatch Logs sends to Firehose records that look like this:
-
-{
-  "messageType": "DATA_MESSAGE",
-  "owner": "123456789012",
-  "logGroup": "log_group_name",
-  "logStream": "log_stream_name",
-  "subscriptionFilters": [
-    "subscription_filter_name"
-  ],
-  "logEvents": [
-    {
-      "id": "01234567890123456789012345678901234567890123456789012345",
-      "timestamp": 1510109208016,
-      "message": "log message 1"
-    },
-    {
-      "id": "01234567890123456789012345678901234567890123456789012345",
-      "timestamp": 1510109208017,
-      "message": "log message 2"
-    }
-    ...
-  ]
-}
-
-The data is additionally compressed with GZIP.
-
-The code below will:
-
-1) Gunzip the data
-2) Parse the json
-3) Set the result to ProcessingFailed for any record whose messageType is not DATA_MESSAGE, thus redirecting them to the
-   processing error output. Such records do not contain any log events. You can modify the code to set the result to
-   Dropped instead to get rid of these records completely.
-4) For records whose messageType is DATA_MESSAGE, extract the individual log events from the logEvents field, and pass
-   each one to the transformLogEvent method. You can modify the transformLogEvent method to perform custom
-   transformations on the log events.
-5) Concatenate the result from (4) together and set the result as the data of the record returned to Firehose. Note that
-   this step will not add any delimiters. Delimiters should be appended by the logic within the transformLogEvent
-   method.
-6) Any additional records which exceed 6MB will be re-ingested back into Firehose.
-
-"""
-
 import base64
 import json
 import gzip
@@ -59,35 +12,12 @@ else:
     import StringIO
 
 
-def transformLogEvent(log_event, source):
-    #def transformLogEvent(log_event,acct,arn,loggrp,logstrm,filterName):
-    """Transform each log event.
-    The default implementation below just extracts the message and appends a newline to it.
-    Args:
-    log_event (dict): The original log event. Structure is {"id": str, "timestamp": long, "message": str}
-    acct: The aws account from where the Cloudwatch event came from
-    arn: The ARN of the Kinesis Stream
-    loggrp: The Cloudwatch log group name
-    logstrm: The Cloudwatch logStream name (not used below)
-    filterName: The Cloudwatch Subscription filter for the Stream
-    Returns:
-    str: The transformed log event.
-        In the case below, Splunk event details are set as:
-        time = event time for the Cloudwatch Log
-        host = ARN of Firehose
-        source = filterName (of cloudwatch Log) contatinated with LogGroup Name
-        sourcetype is set as -
-            aws:cloudtrail if the Log Group name contains CloudTrail
-            aws:cloudwatchlogs:vpcflow if the Log Group name contains VPC
-            the environment variable contents of SPLUNK_SOURCETYPE for all other cases
+def transformLogEvent(log_event, source, logGroup):
 
-    return_event = {}
-    return_event['source'] = source
-    return_event['event'] = log_event['message']
-    return json.dumps(return_event) + '\n'
-    """
-
-    return log_event['message'] + '\n'
+    str_add= source
+    str_msg = log_event['message']
+    str_return = str_msg + '" onshost:' + str_add
+    return str_return + '\n'
 
 def processRecords(records):
     for r in records:
@@ -112,7 +42,8 @@ def processRecords(records):
             }
         elif data['messageType'] == 'DATA_MESSAGE':
             source = data['logGroup'] + ":" + data['logStream']
-            data = ''.join([transformLogEvent(e, source) for e in data['logEvents']])
+            #data = ''.join([transformLogEvent(e, source) for e in data['logEvents']])
+            data = ''.join([transformLogEvent(e, source, data['owner']) for e in data['logEvents']])
             if IS_PY3:
                 data = base64.b64encode(data.encode('utf-8')).decode()
             else:
