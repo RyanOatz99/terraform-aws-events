@@ -297,6 +297,11 @@ variable "metadataserver_cloudwatchlogs_hec_token" {
   type        = string
 }
 
+variable "storagegw_cloudwatchlogs_hec_token" {
+  description = "Storage Gateway CloudWatchLogs HEC Token for use with Splunk Endpoint"
+  default     = ""
+  type        = string
+}
 variable "test_splunk_endpoint" {
   description = "Endpoint address for Test Splunk Instance"
   default     = ""
@@ -333,6 +338,17 @@ variable "metadataserver_cloudwatch_logs_to_ship" {
 }
 
 variable "metadataserver_cloudwatchlogs_rules" {
+  description = "True if the cloudwatchlogs Rules should be enabled."
+  default     = "false"
+  type        = string
+}
+variable "storagegw_cloudwatch_logs_to_ship" {
+  description = "Storage Gateway CloudWatch Log Groups"
+  default     = []
+  type        = list(string)
+}
+
+variable "storagegw_cloudwatchlogs_rules" {
   description = "True if the cloudwatchlogs Rules should be enabled."
   default     = "false"
   type        = string
