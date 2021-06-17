@@ -12,7 +12,7 @@ else:
     import StringIO
 
 
-def transformLogEvent(log_event, source, logGroup):
+def transformLogEvent(log_event, source):
 
     str_add= source
     str_msg = log_event['message']
@@ -42,8 +42,7 @@ def processRecords(records):
             }
         elif data['messageType'] == 'DATA_MESSAGE':
             source = data['logGroup'] + ":" + data['logStream']
-            #data = ''.join([transformLogEvent(e, source) for e in data['logEvents']])
-            data = ''.join([transformLogEvent(e, source, data['owner']) for e in data['logEvents']])
+            data = ''.join([transformLogEvent(e, source) for e in data['logEvents']])
             if IS_PY3:
                 data = base64.b64encode(data.encode('utf-8')).decode()
             else:
