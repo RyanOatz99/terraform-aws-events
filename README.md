@@ -515,3 +515,11 @@ CloudWatch Storage Gateway Log Group Variables
     default = ["",""]
     type = list(string)
     }
+
+CloudWatch linux secure Log Group Variables
+-
+    variable "linux_secure_cloudwatch_logs_to_ship" {
+    description = "Linux Secure CloudWatch Log Groups"
+    default = ["",""]
+    type = list(string)
+    }
