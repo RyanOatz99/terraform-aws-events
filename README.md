@@ -125,7 +125,7 @@ In addition, usage of the module may require:
             type        = string
         }
 
-        variable "linux_auditcloudwatchlogs_hec_token" {
+        variable "linux_audit_cloudwatchlogs_hec_token" {
             description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
             default     = "[LINUX_AUDIT_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
             type        = string
@@ -136,8 +136,26 @@ In addition, usage of the module may require:
             default     = "[LINUX_SYSLOG_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
             type        = string
         }
-  
-        variable "splunk_endpoint" {
+
+        variable "storagegw_cloudwatchlogs_hec_token" {
+            description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
+            default     = "[STORAGEGW_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
+            type        = string
+        }        
+
+        variable "linux_secure_cloudwatchlogs_hec_token" {
+            description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
+            default     = "[LINUX_SECURE_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
+            type        = string
+        }        
+
+        variable "ssm_cloudwatchlogs_hec_token" {
+            description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
+            default     = "[SSM_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
+            type        = string
+        }        
+
+          variable "splunk_endpoint" {
             description = "The Splunk Endpoint URI"
             default     = "[SPUNK_ENDPOINT_HTTPS_ADDRESS]"
             type        = string
@@ -199,7 +217,25 @@ linux_audit_cloudwatchlogs_hec_token
     default     = ""<br>
     type        = string
 
-linux_audit_cloudwatchlogs_hec_token
+linux_syslog_cloudwatchlogs_hec_token
+-
+    CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
+    default     = ""<br>
+    type        = string
+
+linux_secure_cloudwatchlogs_hec_token
+-
+    CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
+    default     = ""<br>
+    type        = string
+
+linux_storagegw_cloudwatchlogs_hec_token
+-
+    CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
+    default     = ""<br>
+    type        = string
+
+ssm_cloudwatchlogs_hec_token
 -
     CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
     default     = ""<br>
@@ -520,6 +556,14 @@ CloudWatch linux secure Log Group Variables
 -
     variable "linux_secure_cloudwatch_logs_to_ship" {
     description = "Linux Secure CloudWatch Log Groups"
+    default = ["",""]
+    type = list(string)
+    }
+
+CloudWatch SSM Log Group Variables
+-
+    variable "ssm_cloudwatch_logs_to_ship" {
+    description = "SSM CloudWatch Log Groups"
     default = ["",""]
     type = list(string)
     }
