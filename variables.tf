@@ -308,6 +308,13 @@ variable "storagegw_cloudwatchlogs_hec_token" {
   default     = ""
   type        = string
 }
+
+variable "ssm_cloudwatchlogs_hec_token" {
+  description = "SSM CloudWatchLogs HEC Token for use with Splunk Endpoint"
+  default     = ""
+  type        = string
+}
+
 variable "test_splunk_endpoint" {
   description = "Endpoint address for Test Splunk Instance"
   default     = ""
@@ -368,6 +375,18 @@ variable "linux_secure_cloudwatch_logs_to_ship" {
 }
 
 variable "linux_secure_cloudwatchlogs_rules" {
+  description = "True if the cloudwatchlogs Rules should be enabled."
+  default     = "false"
+  type        = string
+}
+
+variable "ssm_cloudwatch_logs_to_ship" {
+  description = "SSM CloudWatch Log Groups"
+  default     = []
+  type        = list(string)
+}
+
+variable "ssm_cloudwatchlogs_rules" {
   description = "True if the cloudwatchlogs Rules should be enabled."
   default     = "false"
   type        = string
