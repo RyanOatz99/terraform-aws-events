@@ -69,11 +69,11 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudtrail_events_firehose" {
   splunk_configuration {
     hec_endpoint      = var.splunk_endpoint
     hec_token         = var.cloudtrail_hec_token
-    hec_endpoint_type = "Event"
+    hec_endpoint_type = "Raw"
     s3_backup_mode    = "FailedEventsOnly"
 
     processing_configuration {
-      enabled = "true"
+      enabled = "false"
 
       processors {
         type = "Lambda"
