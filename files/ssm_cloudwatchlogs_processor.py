@@ -3,6 +3,10 @@ import json
 import gzip
 import boto3
 import sys
+import re
+import datetime
+import decimal
+import time
 
 IS_PY3 = sys.version_info[0] == 3
 
@@ -12,12 +16,38 @@ else:
     import StringIO
 
 
-def transformLogEvent(log_event, source):
+def transformLogEvent(log_event, source, logGroup):
+        sourcetype="ssm"
+        source="aws/ssm"
+        host="ssm"
+    pattern='(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) '
+    test_string = log_event['message']
+    result = re.findall(pattern, test_string)
 
-    str_add= source
-    str_msg = log_event['message']
-    str_return = str_msg + '" onshost:' + str_add
-    return str_return + '\n'
+    x=result[0]
+    x = ''.join(result[0])
+    ev_time = x.strip('"')
+    #print(ev_time)
+
+    utc_time = datetime.datetime.strptime(ev_time, "%Y-%m-%d %H:%M:%S")
+
+    epoch_time = (utc_time - datetime.datetime(1970, 1, 1)).total_seconds()
+    #print(epoch_time)
+
+    utc_offset = time.localtime().tm_gmtoff
+    #print(utc_offset)
+    epoch_time = epoch_time - utc_offset
+    #print(epoch_time)
+
+
+    #print(time.localtime().tm_isdst)
+
+    return_message = '{"time": ' + str (epoch_time) + ',"host": "' + str (host) + '","source": "'+ source +'"'
+    #return_message = '{"time": ' + str (epoch_time) ',"host": "' + host + ' +  ',"source": "'+ source +'"'
+    return_message = return_message + ',"sourcetype":"' + sourcetype + '"'
+    return_message = return_message + ',"event": ' + json.dumps(log_event['message']) + '}\n'
+    print(return_message)
+    return return_message + '\n'
 
 def processRecords(records):
     for r in records:
@@ -42,7 +72,7 @@ def processRecords(records):
             }
         elif data['messageType'] == 'DATA_MESSAGE':
             source = data['logGroup'] + ":" + data['logStream']
-            data = ''.join([transformLogEvent(e, source) for e in data['logEvents']])
+            data = ''.join([transformLogEvent(e, source, data['owner']) for e in data['logEvents']])
             if IS_PY3:
                 data = base64.b64encode(data.encode('utf-8')).decode()
             else:
