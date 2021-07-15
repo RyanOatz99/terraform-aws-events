@@ -2,35 +2,82 @@ import base64
 import json
 import gzip
 import boto3
+import os
 import sys
+import re
+import datetime
+import decimal
+import time
 
 IS_PY3 = sys.version_info[0] == 3
-
 if IS_PY3:
     import io
 else:
     import StringIO
 
 
-def transformLogEvent(log_event, source):
+def transformLogEvent(log_event,acct,arn,loggrp,logstrm,filterName):
 
-    str_add= source
-    str_msg = log_event['message']
-    str_return = str_msg + '" onshost:' + str_add
-    return str_return + '\n'
+    region_name=arn.split(':')[3]
+    # note that the region_name is taken from the region for the Stream, this won't change if Cloudwatch from another account/region. Not used for this example function
+    if "CloudTrail" in loggrp:
+        sourcetype="aws:cloudtrail"
+    elif "VPC" in loggrp:
+        sourcetype="aws:cloudwatchlogs:vpcflow"
+    else:
+        sourcetype="linux:messages"
+        source="var/log/messages"
+    pattern='(\w{3}\s{1,2}\d+ \d{2}:\d{2}:\d{2}) |(\w{3}-\w+) '
+    test_string = log_event['message']
+    result = re.findall(pattern, test_string)
 
-def processRecords(records):
+    x = result[0]
+    x = ''.join(result[0])
+    ev_time = x.strip('"')
+    #print(ev_time)
+
+    x = result[1]
+    x = ''.join(result[1])
+    host = x.strip('"')
+    #print(host)
+
+#need to add the year to the timestamp so we can convert to an epoch....
+
+    now = str(datetime.datetime.now().year)
+
+    full_time = now + ' ' + ev_time
+    #print(full_time)
+
+    utc_time = datetime.datetime.strptime(full_time, "%Y %b %d %H:%M:%S")
+
+    epoch_time = (utc_time - datetime.datetime(1970, 1, 1)).total_seconds()
+    #print(epoch_time)
+
+    utc_offset = time.localtime().tm_gmtoff
+    #print(utc_offset)
+    epoch_time = epoch_time - utc_offset
+    #print(epoch_time)
+
+
+    #print(time.localtime().tm_isdst)
+
+    return_message = '{"time": ' + str (epoch_time) + ',"host": "' + str (host) + '","source": "'+ source +'"'
+    return_message = return_message + ',"sourcetype":"' + sourcetype + '"'
+    return_message = return_message + ',"event": ' + json.dumps(log_event['message']) + '}\n'
+    print(return_message)
+    return return_message + '\n'
+
+def processRecords(records,arn):
     for r in records:
         data = base64.b64decode(r['data'])
         if IS_PY3:
-            iodata = io.BytesIO(data)
+            striodata = io.BytesIO(data)
         else:
-            iodata = StringIO.StringIO(data)
-        with gzip.GzipFile(fileobj=iodata, mode='r') as f:
+            striodata = StringIO.StringIO(data)
+        with gzip.GzipFile(fileobj=striodata, mode='r') as f:
             data = json.loads(f.read())
 
         recId = r['recordId']
-
         """
         CONTROL_MESSAGE are sent by CWL to check if the subscription is reachable.
         They do not contain actual data.
@@ -41,8 +88,7 @@ def processRecords(records):
                 'recordId': recId
             }
         elif data['messageType'] == 'DATA_MESSAGE':
-            source = data['logGroup'] + ":" + data['logStream']
-            data = ''.join([transformLogEvent(e, source) for e in data['logEvents']])
+            data = ''.join([transformLogEvent(e,data['owner'],arn,data['logGroup'],data['logStream'],data['subscriptionFilters'][0]) for e in data['logEvents']])
             if IS_PY3:
                 data = base64.b64encode(data.encode('utf-8')).decode()
             else:
@@ -144,7 +190,8 @@ def handler(event, context):
     streamARN = event['sourceKinesisStreamArn'] if isSas else event['deliveryStreamArn']
     region = streamARN.split(':')[3]
     streamName = streamARN.split('/')[1]
-    records = list(processRecords(event['records']))
+
+    records = list(processRecords(event['records'],streamARN))
     projectedSize = 0
     dataByRecordId = {rec['recordId']: createReingestionRecord(isSas, rec) for rec in event['records']}
     putRecordBatches = []
