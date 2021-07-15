@@ -18,6 +18,11 @@ resource "aws_lambda_function" "cloudwatchlogs_processor" {
   runtime          = "python3.7"
   timeout          = 300
   memory_size      = 512
+  environment {
+    variables = {
+      TZ = "Europe/London"
+    }
+  }
 }
 
 resource "aws_lambda_function" "cloudtrail_events_processor" {
@@ -75,6 +80,11 @@ resource "aws_lambda_function" "linux_audit_cloudwatchlogs_processor" {
   runtime          = "python3.7"
   timeout          = 300
   memory_size      = 512
+  environment {
+    variables = {
+      TZ = "Europe/London"
+    }
+  }
 }
 
 resource "aws_lambda_function" "linux_syslog_cloudwatchlogs_processor" {
@@ -87,6 +97,11 @@ resource "aws_lambda_function" "linux_syslog_cloudwatchlogs_processor" {
   runtime          = "python3.7"
   timeout          = 300
   memory_size      = 512
+  environment {
+    variables = {
+      TZ = "Europe/London"
+    }
+  }
 }
 
 resource "aws_lambda_function" "metadataserver_cloudwatchlogs_processor" {
@@ -99,6 +114,11 @@ resource "aws_lambda_function" "metadataserver_cloudwatchlogs_processor" {
   runtime          = "python3.7"
   timeout          = 300
   memory_size      = 512
+  environment {
+    variables = {
+      TZ = "Europe/London"
+    }
+  }
 }
 
 resource "aws_lambda_function" "storagegw_cloudwatchlogs_processor" {
@@ -111,6 +131,11 @@ resource "aws_lambda_function" "storagegw_cloudwatchlogs_processor" {
   runtime          = "python3.7"
   timeout          = 300
   memory_size      = 512
+  environment {
+    variables = {
+      TZ = "Europe/London"
+    }
+  }
 }
 
 resource "aws_lambda_function" "linux_secure_cloudwatchlogs_processor" {
@@ -123,6 +148,11 @@ resource "aws_lambda_function" "linux_secure_cloudwatchlogs_processor" {
   runtime          = "python3.7"
   timeout          = 300
   memory_size      = 512
+  environment {
+    variables = {
+      TZ = "Europe/London"
+    }
+  }
 }
 
 resource "aws_lambda_function" "ssm_cloudwatchlogs_processor" {
@@ -135,4 +165,9 @@ resource "aws_lambda_function" "ssm_cloudwatchlogs_processor" {
   runtime          = "python3.7"
   timeout          = 300
   memory_size      = 512
+  environment {
+    variables = {
+      TZ = "Europe/London"
+    }
+  }
 }
