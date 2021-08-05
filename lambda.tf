@@ -171,3 +171,20 @@ resource "aws_lambda_function" "ssm_cloudwatchlogs_processor" {
     }
   }
 }
+
+resource "aws_lambda_function" "sasworkspace_cloudwatchlogs_processor" {
+  count            = var.sasworkspace_cloudwatchlogs_rules == "true" ? 1 : 0
+  filename         = "${path.module}/files/sasworkspace_cloudwatchlogs_processor.zip"
+  function_name    = "${var.name}-sasworkspace-CloudWatchlogs-Processor"
+  role             = aws_iam_role.events_processor.arn
+  handler          = "sasworkspace_cloudwatchlogs_processor.handler"
+  source_code_hash = filebase64sha256("${path.module}/files/sasworkspace_cloudwatchlogs_processor.zip")
+  runtime          = "python3.7"
+  timeout          = 300
+  memory_size      = 512
+  environment {
+    variables = {
+      TZ = "Europe/London"
+    }
+  }
+}

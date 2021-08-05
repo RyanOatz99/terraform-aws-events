@@ -314,6 +314,11 @@ variable "ssm_cloudwatchlogs_hec_token" {
   default     = ""
   type        = string
 }
+variable "sasworkspace_cloudwatchlogs_hec_token" {
+  description = "sasworkspace CloudWatchLogs HEC Token for use with Splunk Endpoint"
+  default     = ""
+  type        = string
+}
 
 variable "test_splunk_endpoint" {
   description = "Endpoint address for Test Splunk Instance"
@@ -387,6 +392,18 @@ variable "ssm_cloudwatch_logs_to_ship" {
 }
 
 variable "ssm_cloudwatchlogs_rules" {
+  description = "True if the cloudwatchlogs Rules should be enabled."
+  default     = "false"
+  type        = string
+}
+
+variable "sasworkspace_cloudwatch_logs_to_ship" {
+  description = "SAS Workspace CloudWatch Log Groups"
+  default     = []
+  type        = list(string)
+}
+
+variable "sasworkspace_cloudwatchlogs_rules" {
   description = "True if the cloudwatchlogs Rules should be enabled."
   default     = "false"
   type        = string

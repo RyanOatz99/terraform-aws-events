@@ -149,6 +149,16 @@ data "aws_iam_policy_document" "firehose_backup_s3_access" {
       resources = [aws_kinesis_firehose_delivery_stream.metadataserver_cloudwatchlogs_firehose[0].arn]
     }
   }
+  dynamic "statement" {
+    for_each = aws_kinesis_firehose_delivery_stream.sasworkspace_cloudwatchlogs_firehose
+
+    content {
+      sid       = "AllowKinesisDeliveryStreamAccesssasworkspaceCWLogs"
+      actions   = ["*"]
+      effect    = "Allow"
+      resources = [aws_kinesis_firehose_delivery_stream.sasworkspace_cloudwatchlogs_firehose[0].arn]
+    }
+  }
 
   dynamic "statement" {
     for_each = aws_kinesis_firehose_delivery_stream.vpcflowlogs_firehose
@@ -329,6 +339,18 @@ data "aws_iam_policy_document" "firehose_delivery_access" {
       sid       = "AllowKinesisDeliveryStreamAccessSecureCWLogs"
       effect    = "Allow"
       resources = [aws_kinesis_firehose_delivery_stream.linux_secure_cloudwatchlogs_firehose[0].arn]
+    }
+  }
+  dynamic "statement" {
+    for_each = aws_kinesis_firehose_delivery_stream.sasworkspace_cloudwatchlogs_firehose
+    content {
+      actions = [
+        "firehose:PutRecord",
+        "firehose:PutRecordBatch"
+      ]
+      sid       = "AllowKinesisDeliveryStreamAccesssasworkspaceCWLogs"
+      effect    = "Allow"
+      resources = [aws_kinesis_firehose_delivery_stream.sasworkspace_cloudwatchlogs_firehose[0].arn]
     }
   }
   dynamic "statement" {
@@ -948,4 +970,59 @@ resource "aws_iam_role_policy_attachment" "ssm_cloudwatch_to_firehose" {
   count      = var.ssm_cloudwatchlogs_rules == "true" ? 1 : 0
   role       = aws_iam_role.ssm_cloudwatch_to_firehose_trust[0].name
   policy_arn = aws_iam_policy.ssm_cloudwatch_to_firehose_access_policy[0].arn
+}
+resource "aws_iam_role" "sasworkspace_cloudwatch_to_firehose_trust" {
+  count       = var.sasworkspace_cloudwatchlogs_rules == "true" ? 1 : 0
+  name        = "${var.name}-sasworkspaceCWLtoKinesisFirehoseRole"
+  description = "Role for sasworkspace CloudWatch Log Group subscription"
+
+  assume_role_policy = data.aws_iam_policy_document.sasworkspace_cloudwatchlogs_firehose_assume[0].json
+}
+
+data "aws_iam_policy_document" "sasworkspace_cloudwatchlogs_firehose_assume" {
+  count = var.sasworkspace_cloudwatchlogs_rules == "true" ? 1 : 0
+  statement {
+    sid     = "AllowsasworkspaceCloudWatchLogsAssumeRole"
+    actions = ["sts:AssumeRole"]
+    effect  = "Allow"
+    principals {
+      identifiers = ["logs.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+}
+
+data "aws_iam_policy_document" "sasworkspace_cloudwatch_to_firehose_access_policy" {
+  count = var.sasworkspace_cloudwatchlogs_rules == "true" ? 1 : 0
+  statement {
+    actions = [
+      "firehose:*",
+    ]
+    effect = "Allow"
+    resources = [
+      aws_kinesis_firehose_delivery_stream.sasworkspace_cloudwatchlogs_firehose[0].arn,
+    ]
+  }
+  statement {
+    actions = [
+      "iam:PassRole",
+    ]
+    effect = "Allow"
+    resources = [
+      aws_iam_role.sasworkspace_cloudwatch_to_firehose_trust[0].arn,
+    ]
+  }
+}
+
+resource "aws_iam_policy" "sasworkspace_cloudwatch_to_firehose_access_policy" {
+  count       = var.sasworkspace_cloudwatchlogs_rules == "true" ? 1 : 0
+  name        = "${var.name}sasworkspaceCloudWatchtoFirehoseAccess"
+  description = "sasworkspace Cloudwatch to Firehose Subscription Policy"
+  policy      = data.aws_iam_policy_document.sasworkspace_cloudwatch_to_firehose_access_policy[0].json
+}
+
+resource "aws_iam_role_policy_attachment" "sasworkspace_cloudwatch_to_firehose" {
+  count      = var.sasworkspace_cloudwatchlogs_rules == "true" ? 1 : 0
+  role       = aws_iam_role.sasworkspace_cloudwatch_to_firehose_trust[0].name
+  policy_arn = aws_iam_policy.sasworkspace_cloudwatch_to_firehose_access_policy[0].arn
 }
