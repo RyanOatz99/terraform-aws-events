@@ -128,7 +128,7 @@ resource "aws_lambda_function" "storagegw_cloudwatchlogs_processor" {
   role             = aws_iam_role.events_processor.arn
   handler          = "storagegw_cloudwatchlogs_processor.handler"
   source_code_hash = filebase64sha256("${path.module}/files/storagegw_cloudwatchlogs_processor.zip")
-  runtime          = "python3.7"
+  runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
   environment {
