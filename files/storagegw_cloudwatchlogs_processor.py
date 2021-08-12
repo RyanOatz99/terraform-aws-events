@@ -22,8 +22,11 @@ def transformLogEvent(log_event, source, logGroup):
     host="sgw-1351B77A"
 
     pattern='timestamp\":\"(\d+)'
+    pattern2= r'[{}]'
     test_string = log_event['message']
-    result = re.findall(pattern, test_string)
+    mod_string = re.sub(pattern2, '', test_string)
+    #print(mod_string)
+    result = re.findall(pattern, mod_string)
 
     x=result[0]
     x = ''.join(result[0])
@@ -38,9 +41,9 @@ def transformLogEvent(log_event, source, logGroup):
 
     #print(time.localtime().tm_isdst)
 
-    return_message = '{"time": ' + str (epoch_time) + ',"host": "' + str (host) + '","source": "'+ source +'"'
-    return_message = return_message + ',"sourcetype":"' + sourcetype + '"'
-    return_message = return_message + json.dumps(test_string) + '}\n'
+    return_message = '{"time": "' + str(epoch_time) + '","host": "' + str(host) + '","source": "' + source + '"'
+    return_message = return_message + ',"sourcetype":"' + sourcetype + '",'
+    return_message = return_message + (mod_string) + '}\n'
     print(return_message)
     return return_message + '\n'
 

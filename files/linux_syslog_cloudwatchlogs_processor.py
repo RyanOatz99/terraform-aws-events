@@ -17,16 +17,9 @@ else:
 
 
 def transformLogEvent(log_event,acct,arn,loggrp,logstrm,filterName):
+    sourcetype="linux:messages"
+    source="var/log/messages"
 
-    region_name=arn.split(':')[3]
-    # note that the region_name is taken from the region for the Stream, this won't change if Cloudwatch from another account/region. Not used for this example function
-    if "CloudTrail" in loggrp:
-        sourcetype="aws:cloudtrail"
-    elif "VPC" in loggrp:
-        sourcetype="aws:cloudwatchlogs:vpcflow"
-    else:
-        sourcetype="linux:messages"
-        source="var/log/messages"
     pattern='(\w{3}\s{1,2}\d+ \d{2}:\d{2}:\d{2}) |(\w{3}-\w+) '
     test_string = log_event['message']
     result = re.findall(pattern, test_string)
@@ -41,7 +34,7 @@ def transformLogEvent(log_event,acct,arn,loggrp,logstrm,filterName):
     host = x.strip('"')
     #print(host)
 
-#need to add the year to the timestamp so we can convert to an epoch....
+    #need to add the year to the timestamp so we can convert to an epoch....
 
     now = str(datetime.datetime.now().year)
 
