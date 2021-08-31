@@ -240,6 +240,11 @@ variable "subscription_filter_pattern" {
   default     = "" # nothing is being filtered
 }
 
+variable "denodo_subscription_filter_pattern" {
+  description = "Filter pattern for the Denodo CloudWatch Log Group subscription to the Kinesis Firehose. See [this](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html) for filter pattern info."
+  default     = "" # nothing is being filtered
+}
+
 variable "vpcflowlogs_subscription_filter_pattern" {
   description = "Filter pattern for the CloudWatch Log Group subscription to the Kinesis Firehose. See [this](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html) for filter pattern info."
   default     = "$${version} $${account-id} $${interface-id} $${srcaddr} $${dstaddr} $${srcport} $${dstport} $${protocol} $${packets} $${bytes} $${start} $${end} $${action} $${log-status} $${vpc-id}" // nothing is being filtered
@@ -276,6 +281,30 @@ variable "vpcflowlogs_cloudwatch_log_group_retention_in_days" {
 variable "vpcflowlogs_cloudwatch_log_group_name" {
   description = "CloudWatch Log Group VPC Flow Log Name"
   default     = "vpcflowlogs-splunk"
+  type        = string
+}
+
+variable "denodo_linux_messages_cloudwatch_logs_hec_token" {
+  description = "Denodo Linux syslog CloudWatchLogs HEC Token for use with Splunk Endpoint"
+  default     = ""
+  type        = string
+}
+
+variable "denodo_linux_secure_cloudwatch_logs_hec_token" {
+  description = "Denodo Linux messages CloudWatchLogs HEC Token for use with Splunk Endpoint"
+  default     = ""
+  type        = string
+}
+
+variable "denodo_vdp_connections_cloudwatch_logs_hec_token" {
+  description = "Denodo VDP Connections CloudWatchLogs HEC Token for use with Splunk Endpoint"
+  default     = ""
+  type        = string
+}
+
+variable "denodo_vdp_queries_cloudwatch_logs_hec_token" {
+  description = "Denodo VDP Queries CloudWatchLogs HEC Token for use with Splunk Endpoint"
+  default     = ""
   type        = string
 }
 
@@ -404,7 +433,55 @@ variable "sasworkspace_cloudwatch_logs_to_ship" {
 }
 
 variable "sasworkspace_cloudwatchlogs_rules" {
-  description = "True if the cloudwatchlogs Rules should be enabled."
+  description = "True if the CloudWatch Logs Rules should be enabled."
   default     = "false"
   type        = string
+}
+
+variable "denodo_linux_messages_cloudwatch_logs_rules" {
+  description = "True if the Denodo messages CloudWatch Logs Rules should be enabled."
+  default     = "false"
+  type        = string
+}
+
+variable "denodo_linux_messages_cloudwatch_logs_logs_to_ship" {
+  description = "Denodo messages CloudWatch Log Groups"
+  default     = []
+  type        = list(string)
+}
+
+variable "denodo_linux_secure_cloudwatch_logs_rules" {
+  description = "True if the Denodo Syslog CloudWatch Logs Rules should be enabled."
+  default     = "false"
+  type        = string
+}
+
+variable "denodo_linux_secure_cloudwatch_logs_logs_to_ship" {
+  description = "Denodo Syslog CloudWatch Log Groups"
+  default     = []
+  type        = list(string)
+}
+
+variable "denodo_vdp_connections_cloudwatch_logs_rules" {
+  description = "True if the Denodo VDP Connections CloudWatch Logs Rules should be enabled."
+  default     = "false"
+  type        = string
+}
+
+variable "denodo_vdp_connections_cloudwatch_logs_logs_to_ship" {
+  description = "Denodo Syslog CloudWatch Log Groups"
+  default     = []
+  type        = list(string)
+}
+
+variable "denodo_vdp_queries_cloudwatch_logs_rules" {
+  description = "True if the Denodo VDP Queries CloudWatch Logs Rules should be enabled."
+  default     = "false"
+  type        = string
+}
+
+variable "denodo_vdp_queries_cloudwatch_logs_logs_to_ship" {
+  description = "Denodo Syslog CloudWatch Log Groups"
+  default     = []
+  type        = list(string)
 }

@@ -7,6 +7,7 @@ import sys
 import re
 import datetime
 import decimal
+import time
 
 IS_PY3 = sys.version_info[0] == 3
 if IS_PY3:
@@ -17,50 +18,46 @@ else:
 
 def transformLogEvent(log_event,acct,arn,loggrp,logstrm,filterName):
 
-    region_name=arn.split(':')[3]
+    # region_name=arn.split(':')[3]
     # note that the region_name is taken from the region for the Stream, this won't change if Cloudwatch from another account/region. Not used for this example function
-    sourcetype="linux:audit"
-    source="/var/log/audit"
-
-    """
-    testing stuff
-    """
-    #pattern= '\d+\.\d+'
-    pattern='node=(\w+-\w+)|(\d+\.\d{3})'
-
-
-    #test_string = 'node=cep-sas type=PROCTITLE msg=audit(1625047999.074:726274): proctitle=2F6'
+    sourcetype="linux:secure"
+    source="/var/log/secure"
+    pattern='(\w{3}\s{1,2}\d+ \d{2}:\d{2}:\d{2}) |(\w{2}-\d+-\d+-\d+-\d+)'
     test_string = log_event['message']
-    print(test_string)
     result = re.findall(pattern, test_string)
-    print(result[0])
-    x=result[0]
+
+    x = result[0]
     x = ''.join(result[0])
-    host = x.strip('"')
-    print(host)
-    x=result[1]
+    ev_time = x.strip('"')
+    #print(ev_time)
+
+    x = result[1]
     x = ''.join(result[1])
-    time = x.strip('"')
-    time_d = decimal.Decimal(time)
-    print(time_d)
+    host = x.strip('"')
+    print("HOST: ", host)
 
-    #d = decimal.Decimal((result[0]))
-    #print(d)
+#need to add the year to the timestamp so we can convert to an epoch....
 
-    #datetime_time = datetime.datetime.fromtimestamp(d)
-    #print(datetime_time)
+    now = str(datetime.datetime.now().year)
 
-    """
-    testing stuff
-    """
+    full_time = now + ' ' + ev_time
+    #print(full_time)
 
-    #return_message = '{"time": ' + str(log_event['timestamp']) + ',"host": "' + arn  +'","source": "' + filterName +':' + loggrp + '"'
-    #return_message = '{"time": "' +  str(datetime_time) + '","host": "' + arn  +'","source": "' + filterName +':' + loggrp + '"'
-    # this one works.... return_message = '{"time": ' + str(d) + ',"host": "' + arn  +'","source": "' + filterName +':' + loggrp + '"'
-    # more efficient return_message = '{"time": ' + result[0] + ',"host": "' + arn  +'","source": "' + filterName +':' + loggrp + '"'
-    #return_message = '{"time": ' + result[0] + ',"host": "' + arn + '","source": "' + source +'"'
-    return_message = '{"time": ' + str (time_d) + ',"host": "' + str (host) + '","source": "'+ source +'"'
-    return_message = return_message + ',"sourcetype":"' + sourcetype  + '"'
+    utc_time = datetime.datetime.strptime(full_time, "%Y %b %d %H:%M:%S")
+
+    epoch_time = (utc_time - datetime.datetime(1970, 1, 1)).total_seconds()
+    #print(epoch_time)
+
+    utc_offset = time.localtime().tm_gmtoff
+    #print(utc_offset)
+    epoch_time = epoch_time - utc_offset
+    #print(epoch_time)
+
+
+    #print(time.localtime().tm_isdst)
+
+    return_message = '{"time": ' + str (epoch_time) + ',"host": "' + str (host) + '","source": "'+ source +'"'
+    return_message = return_message + ',"sourcetype":"' + sourcetype + '"'
     return_message = return_message + ',"event": ' + json.dumps(log_event['message']) + '}\n'
     print(return_message)
     return return_message + '\n'
