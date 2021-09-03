@@ -67,7 +67,7 @@ resource "aws_kinesis_firehose_delivery_stream" "denodo_vdp_connections_cloudwat
 
 resource "aws_cloudwatch_log_group" "denodo_vdp_connections_cloudwatch_logs_firehose" {
   count = var.denodo_vdp_connections_cloudwatch_logs_rules == "true" ? 1 : 0
-  name  = "/denodo-vdp-connections-cloudwatch-logs-firehose/"
+  name  = "/firehose/denodo/vdp-connections"
 }
 
 resource "aws_cloudwatch_log_stream" "denodo_vdp_connections_cloudwatch_logs_firehose" {
@@ -78,11 +78,11 @@ resource "aws_cloudwatch_log_stream" "denodo_vdp_connections_cloudwatch_logs_fir
 
 resource "aws_lambda_function" "denodo_vdp_connections_cloudwatch_logs_processor" {
   count            = var.denodo_vdp_connections_cloudwatch_logs_rules == "true" ? 1 : 0
-  filename         = "${path.module}/files/denodo_vdp_connections_cloudwatchlogs_processor.zip"
+  filename         = "${path.module}/files/processor.zip"
   function_name    = "${var.name}-denodo-vdp-connections-CloudWatchlogs-Processor"
   role             = aws_iam_role.events_processor.arn
-  handler          = "denodo_vdp_connections_cloudwatchlogs_processor.handler"
-  source_code_hash = filebase64sha256("${path.module}/files/denodo_vdp_connections_cloudwatchlogs_processor.zip")
+  handler          = "processor.handler"
+  source_code_hash = filebase64sha256("${path.module}/files/processor.zip")
   runtime          = "python3.7"
   timeout          = 300
   memory_size      = 512

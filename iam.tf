@@ -431,6 +431,27 @@ data "aws_iam_policy_document" "firehose_lambda_access" {
     effect    = "Allow"
     resources = ["*"]
   }
+  statement {
+    actions = [
+      "ssm:DescribeParameters",
+    ]
+    effect    = "Allow"
+    resources = ["*"]
+  }
+  statement {
+    actions = [
+      "ssm:GetParameter",
+    ]
+    effect    = "Allow"
+    resources = [aws_ssm_parameter.processing_lambda_config.arn]
+  }
+  statement {
+    actions = [
+      "kms:Decrypt",
+    ]
+    effect    = "Allow"
+    resources = [aws_kms_key.processing_lambda.arn]
+  }
 }
 
 resource "aws_iam_policy" "firehose_lambda_access" {

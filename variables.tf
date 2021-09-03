@@ -349,11 +349,11 @@ variable "sasworkspace_cloudwatchlogs_hec_token" {
   type        = string
 }
 
-variable "test_splunk_endpoint" {
-  description = "Endpoint address for Test Splunk Instance"
-  default     = ""
-  type        = string
-}
+//variable "test_splunk_endpoint" {
+//  description = "Endpoint address for Test Splunk Instance"
+//  default     = ""
+//  type        = string
+//}
 
 variable "linux_audit_cloudwatch_logs_to_ship" {
   description = "Linux Audit CloudWatch Log Groups"
