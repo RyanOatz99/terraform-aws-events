@@ -1,14 +1,14 @@
 # Create the stream
-resource "aws_cloudwatch_log_stream" "denodo_vdp_queries_kinesis_logs" {
-  count          = var.denodo_vdp_queries_cloudwatch_logs_rules == "true" ? 1 : 0
-  name           = var.log_stream_name
-  log_group_name = aws_cloudwatch_log_group.denodo_vdp_queries_kinesis_logs[0].name
-}
-
-resource "aws_cloudwatch_log_group" "denodo_vdp_queries_kinesis_logs" {
-  count = var.denodo_vdp_queries_cloudwatch_logs_rules == "true" ? 1 : 0
-  name  = "/denodo/firehose/vdp-queries/"
-}
+//resource "aws_cloudwatch_log_stream" "denodo_vdp_queries_kinesis_logs" {
+//  count          = var.denodo_vdp_queries_cloudwatch_logs_rules == "true" ? 1 : 0
+//  name           = var.log_stream_name
+//  log_group_name = aws_cloudwatch_log_group.denodo_vdp_queries_kinesis_logs[0].name
+//}
+//
+//resource "aws_cloudwatch_log_group" "denodo_vdp_queries_kinesis_logs" {
+//  count = var.denodo_vdp_queries_cloudwatch_logs_rules == "true" ? 1 : 0
+//  name  = "/denodo/firehose/vdp-queries/"
+//}
 
 #Create the subscription filter
 resource "aws_cloudwatch_log_subscription_filter" "denodo_vdp_queries_cloudwatch_logs_to_firehose" {
@@ -67,7 +67,7 @@ resource "aws_kinesis_firehose_delivery_stream" "denodo_vdp_queries_cloudwatchlo
 
 resource "aws_cloudwatch_log_group" "denodo_vdp_queries_cloudwatch_logs_firehose" {
   count = var.denodo_vdp_queries_cloudwatch_logs_rules == "true" ? 1 : 0
-  name  = "/denodo/firehose/vdp-queries"
+  name  = "/pm/denodo/vdp-queries/"
 }
 
 resource "aws_cloudwatch_log_stream" "denodo_vdp_queries_cloudwatch_logs_firehose" {

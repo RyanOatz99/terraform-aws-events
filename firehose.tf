@@ -42,7 +42,7 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudwatch_events" {
 }
 
 resource "aws_cloudwatch_log_group" "cloudwatch_events_firehose" {
-  name = "/cloudwatch-events-firehose/"
+  name = "/pm/aws/cloudwatch/"
 }
 
 resource "aws_cloudwatch_log_stream" "cloudwatch_events_firehose" {
@@ -94,7 +94,7 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudtrail_events_firehose" {
 }
 
 resource "aws_cloudwatch_log_group" "cloudtrail_events_firehose" {
-  name = "/cloudtrail-events-firehose/"
+  name = "/pm/aws/cloudtrail/"
 }
 
 resource "aws_cloudwatch_log_stream" "cloudtrail_events_firehose" {
@@ -146,7 +146,7 @@ resource "aws_kinesis_firehose_delivery_stream" "guardduty_events_firehose" {
 }
 
 resource "aws_cloudwatch_log_group" "guardduty_events_firehose" {
-  name = "/guardduty-events-firehose/"
+  name = "/pm/aws/guardduty/"
 }
 
 resource "aws_cloudwatch_log_stream" "guardduty_events_firehose" {
@@ -198,7 +198,7 @@ resource "aws_kinesis_firehose_delivery_stream" "securityhub_events_firehose" {
 }
 
 resource "aws_cloudwatch_log_group" "securityhub_events_firehose" {
-  name = "/securityhub-events-firehose/"
+  name = "/pm/aws/securityhub/"
 }
 
 resource "aws_cloudwatch_log_stream" "securityhub_events_firehose" {
@@ -252,7 +252,7 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudwatchlogs_firehose" {
 
 resource "aws_cloudwatch_log_group" "cloudwatchlogs_firehose" {
   count = var.cloudwatchlogs_rules == "true" ? 1 : 0
-  name  = "/cloudwatchlogs-firehose/"
+  name  = "/pm/aws/cloudwatch-logs/"
 }
 
 resource "aws_cloudwatch_log_stream" "cloudwatchlogs_firehose" {
@@ -307,7 +307,7 @@ resource "aws_kinesis_firehose_delivery_stream" "vpcflowlogs_firehose" {
 
 resource "aws_cloudwatch_log_group" "vpcflowlogs_firehose" {
   count = var.vpcflowlogs_rules == "true" ? 1 : 0
-  name  = "/vpcflowlogs-firehose/"
+  name  = "/pm/aws/vpcflowlogs/"
 }
 
 resource "aws_cloudwatch_log_stream" "vpcflowlogs_firehose" {
@@ -362,7 +362,7 @@ resource "aws_kinesis_firehose_delivery_stream" "linux_audit_cloudwatchlogs_fire
 
 resource "aws_cloudwatch_log_group" "linux_audit_cloudwatchlogs_firehose" {
   count = var.linux_audit_cloudwatchlogs_rules == "true" ? 1 : 0
-  name  = "/linux-audit-cloudwatchlogs-firehose/"
+  name  = "/pm/aws/linux-audit/"
 }
 
 resource "aws_cloudwatch_log_stream" "linux_audit_cloudwatchlogs_firehose" {
@@ -417,7 +417,7 @@ resource "aws_kinesis_firehose_delivery_stream" "linux_syslog_cloudwatchlogs_fir
 
 resource "aws_cloudwatch_log_group" "linux_syslog_cloudwatchlogs_firehose" {
   count = var.linux_syslog_cloudwatchlogs_rules == "true" ? 1 : 0
-  name  = "/linux-syslog-cloudwatchlogs-firehose/"
+  name  = "/pm/aws/linux-syslog/"
 }
 
 resource "aws_cloudwatch_log_stream" "linux_syslog_cloudwatchlogs_firehose" {
@@ -472,7 +472,7 @@ resource "aws_kinesis_firehose_delivery_stream" "metadataserver_cloudwatchlogs_f
 
 resource "aws_cloudwatch_log_group" "metadataserver_cloudwatchlogs_firehose" {
   count = var.metadataserver_cloudwatchlogs_rules == "true" ? 1 : 0
-  name  = "/metadataserver-cloudwatchlogs-firehose/"
+  name  = "/pm/sas/metadataserver/"
 }
 
 resource "aws_cloudwatch_log_stream" "metadataserver_cloudwatchlogs_firehose" {
@@ -527,7 +527,7 @@ resource "aws_kinesis_firehose_delivery_stream" "storagegw_cloudwatchlogs_fireho
 
 resource "aws_cloudwatch_log_group" "storagegw_cloudwatchlogs_firehose" {
   count = var.storagegw_cloudwatchlogs_rules == "true" ? 1 : 0
-  name  = "/storagegw-cloudwatchlogs-firehose/"
+  name  = "/pm/aws/storagegw/"
 }
 
 resource "aws_cloudwatch_log_stream" "storagegw_cloudwatchlogs_firehose" {
@@ -582,7 +582,7 @@ resource "aws_kinesis_firehose_delivery_stream" "linux_secure_cloudwatchlogs_fir
 
 resource "aws_cloudwatch_log_group" "linux_secure_cloudwatchlogs_firehose" {
   count = var.linux_secure_cloudwatchlogs_rules == "true" ? 1 : 0
-  name  = "/linux-secure-cloudwatchlogs-firehose/"
+  name  = "/pm/aws/linux-secure/"
 }
 
 resource "aws_cloudwatch_log_stream" "linux_secure_cloudwatchlogs_firehose" {
@@ -637,7 +637,7 @@ resource "aws_kinesis_firehose_delivery_stream" "ssm_cloudwatchlogs_firehose" {
 
 resource "aws_cloudwatch_log_group" "ssm_cloudwatchlogs_firehose" {
   count = var.ssm_cloudwatchlogs_rules == "true" ? 1 : 0
-  name  = "/ssm-cloudwatchlogs-firehose/"
+  name  = "/pm/aws/ssm/"
 }
 
 resource "aws_cloudwatch_log_stream" "ssm_cloudwatchlogs_firehose" {
@@ -692,7 +692,7 @@ resource "aws_kinesis_firehose_delivery_stream" "sasworkspace_cloudwatchlogs_fir
 
 resource "aws_cloudwatch_log_group" "sasworkspace_cloudwatchlogs_firehose" {
   count = var.sasworkspace_cloudwatchlogs_rules == "true" ? 1 : 0
-  name  = "/sasworkspace-cloudwatchlogs-firehose/"
+  name  = "/pm/sas/sasworkspace/"
 }
 
 resource "aws_cloudwatch_log_stream" "sasworkspace_cloudwatchlogs_firehose" {

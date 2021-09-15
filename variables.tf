@@ -292,7 +292,7 @@ variable "vpcflowlogs_cloudwatch_log_group_retention_in_days" {
 
 variable "vpcflowlogs_cloudwatch_log_group_name" {
   description = "CloudWatch Log Group VPC Flow Log Name"
-  default     = "vpcflowlogs-splunk"
+  default     = "/pm/aws/vpcflowlogs/"
   type        = string
 }
 

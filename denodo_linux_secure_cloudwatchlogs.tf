@@ -1,14 +1,14 @@
 # Create the stream
-resource "aws_cloudwatch_log_stream" "denodo_linux_secure_kinesis_logs" {
-  count          = var.denodo_linux_secure_cloudwatch_logs_rules == "true" ? 1 : 0
-  name           = var.log_stream_name
-  log_group_name = aws_cloudwatch_log_group.denodo_linux_secure_kinesis_logs[0].name
-}
-
-resource "aws_cloudwatch_log_group" "denodo_linux_secure_kinesis_logs" {
-  count = var.denodo_linux_secure_cloudwatch_logs_rules == "true" ? 1 : 0
-  name  = "/denodo/firehose/linux-secure/"
-}
+//resource "aws_cloudwatch_log_stream" "denodo_linux_secure_kinesis_logs" {
+//  count          = var.denodo_linux_secure_cloudwatch_logs_rules == "true" ? 1 : 0
+//  name           = var.log_stream_name
+//  log_group_name = aws_cloudwatch_log_group.denodo_linux_secure_kinesis_logs[0].name
+//}
+//
+//resource "aws_cloudwatch_log_group" "denodo_linux_secure_kinesis_logs" {
+//  count = var.denodo_linux_secure_cloudwatch_logs_rules == "true" ? 1 : 0
+//  name  = "/denodo/firehose/linux-secure/"
+//}
 
 #Create the subscription filter
 resource "aws_cloudwatch_log_subscription_filter" "denodo_linux_secure_cloudwatch_logs_to_firehose" {
@@ -67,7 +67,7 @@ resource "aws_kinesis_firehose_delivery_stream" "denodo_linux_secure_cloudwatchl
 
 resource "aws_cloudwatch_log_group" "denodo_linux_secure_cloudwatch_logs_firehose" {
   count = var.denodo_linux_secure_cloudwatch_logs_rules == "true" ? 1 : 0
-  name  = "/denodo/firehose/linux-secure/"
+  name  = "/pm/denodo/linux-secure/"
 }
 
 resource "aws_cloudwatch_log_stream" "denodo_linux_secure_cloudwatch_logs_firehose" {

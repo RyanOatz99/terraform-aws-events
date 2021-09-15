@@ -1,14 +1,14 @@
 # Create the stream
-resource "aws_cloudwatch_log_stream" "denodo_vdp_log_kinesis_logs" {
-  count          = var.denodo_vdp_log_cloudwatch_logs_rules == "true" ? 1 : 0
-  name           = var.log_stream_name
-  log_group_name = aws_cloudwatch_log_group.denodo_vdp_log_kinesis_logs[0].name
-}
-
-resource "aws_cloudwatch_log_group" "denodo_vdp_log_kinesis_logs" {
-  count = var.denodo_vdp_log_cloudwatch_logs_rules == "true" ? 1 : 0
-  name  = "/denodo/firehose/vdp-log/"
-}
+//resource "aws_cloudwatch_log_stream" "denodo_vdp_log_kinesis_logs" {
+//  count          = var.denodo_vdp_log_cloudwatch_logs_rules == "true" ? 1 : 0
+//  name           = var.log_stream_name
+//  log_group_name = aws_cloudwatch_log_group.denodo_vdp_log_kinesis_logs[0].name
+//}
+//
+//resource "aws_cloudwatch_log_group" "denodo_vdp_log_kinesis_logs" {
+//  count = var.denodo_vdp_log_cloudwatch_logs_rules == "true" ? 1 : 0
+//  name  = "/denodo/firehose/vdp-log/"
+//}
 
 #Create the subscription filter
 resource "aws_cloudwatch_log_subscription_filter" "denodo_vdp_log_cloudwatch_logs_to_firehose" {
@@ -67,7 +67,7 @@ resource "aws_kinesis_firehose_delivery_stream" "denodo_vdp_log_cloudwatchlogs_f
 
 resource "aws_cloudwatch_log_group" "denodo_vdp_log_cloudwatch_logs_firehose" {
   count = var.denodo_vdp_log_cloudwatch_logs_rules == "true" ? 1 : 0
-  name  = "/denodo/firehose/vdp-log"
+  name  = "/pm/denodo/vdp-log/"
 }
 
 resource "aws_cloudwatch_log_stream" "denodo_vdp_log_cloudwatch_logs_firehose" {
@@ -95,7 +95,7 @@ resource "aws_lambda_function" "denodo_vdp_log_cloudwatch_logs_processor" {
 
 resource "aws_iam_role" "denodo_vdp_log_cloudwatch_to_firehose_trust" {
   count       = var.denodo_vdp_log_cloudwatch_logs_rules == "true" ? 1 : 0
-  name        = "${var.name}-DenodoVDPQtoKinesisFirehoseRole"
+  name        = "${var.name}-DenodoVDPLogtoKinesisFirehoseRole"
   description = "Role for Denodo VDP Queries CloudWatch Log Group subscription"
 
   assume_role_policy = data.aws_iam_policy_document.denodo_vdp_log_cloudwatch_logs_firehose_assume[0].json
@@ -116,7 +116,7 @@ data "aws_iam_policy_document" "denodo_vdp_log_cloudwatch_logs_firehose_assume" 
 
 resource "aws_iam_policy" "denodo_vdp_log_cloudwatch_to_firehose_access_policy" {
   count       = var.denodo_vdp_log_cloudwatch_logs_rules == "true" ? 1 : 0
-  name        = "${var.name}DenodoVDPQueriesCloudWatchtoFirehoseAccess"
+  name        = "${var.name}DenodoVDPLogCloudWatchtoFirehoseAccess"
   description = "Denodo Messages Cloudwatch to Firehose Subscription Policy"
   policy      = data.aws_iam_policy_document.denodo_vdp_log_cloudwatch_to_firehose_access_policy[0].json
 }
