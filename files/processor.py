@@ -17,67 +17,66 @@ else:
 
 ssm_client = boto3.client('ssm')
 
-def transformLogEvent(log_event, source, owner, config, streamName):
+def transformLogEvent(log_event, source, owner, config, streamName, aws_account_id):
     return_message = "EVENT_NOT_FOUND"
-    print(" Event: ",log_event)
-    print("Source: ",source)
-    print(" Owner: ",owner)
-    print("Config: ",config)
+    print(" Event: ", log_event)
+    print("Source: ", source)
+    print(" Owner: ", owner)
+    print("Config: ", config)
     event = log_event['message']
-    print("LOG_EVENT: ", event)
-    print("EVENT_STREAMNAME: ", streamName)
 
     for pattern in config['patterns']:
-        print("LOOKING FOR ", streamName , " IN " ,pattern['streamname'])
+        print("Searching for '", streamName , "' in config '", pattern['streamname'], "'")
         result = re.findall(streamName, pattern['streamname'])
         if result:
-            print("PATTERN STREAMNAME: ", pattern['streamname'])
-            print("RESULT: ", result)
             date_result = re.findall(pattern['date_regex'], event)
-            print("LOOKING FOR ", pattern['date_regex'], " IN " , event)
+            print("Searching for '", pattern['date_regex'], "' in '", event, "'")
             if date_result:
-                print("DATE_RESULT: ", date_result)
+                print("Found Date Result: ", date_result)
                 x = event.split()
                 host_pos = int(pattern['host_pos'])
                 host = x[host_pos]
-                print("HOST: ", host)
+                print("Found Host: ", host)
 
                 if pattern['date_time'] == 'standard':
+                    print("Using '", pattern['date_time'], "'")
                     x = ''.join(date_result[0])
-                    print("x: ", x)
                     log_time = x.strip('"')
-                    print("log_time: ", log_time)
+                    print("Log Time: ", log_time)
 
                     try:
                         if pattern['fix_year']:
+                            print("Fixing year...")
                             now = str(datetime.datetime.now().year)
                             full_time = now + ' ' + log_time
-                            print("full_time: ", full_time)
+                            print("Full Time: ", full_time)
                             log_time = full_time
                     except KeyError as e:
                         pass
 
                     utc_time = datetime.datetime.strptime(log_time, pattern['date_format'])
-                    print("utc_time: ", utc_time)
+                    print("UTC Time: ", utc_time)
                     epoch_time = (utc_time - datetime.datetime(1970, 1, 1)).total_seconds()
                     if pattern['utc_offset']:
+                        print("Fixing UTC Offset... ")
                         utc_offset = time.localtime().tm_gmtoff
                         epoch_time = epoch_time - utc_offset
-                    print("epoch_time", epoch_time)
+                    print("Epoch Time: ", epoch_time)
 
                 else:
                     epoch_time = date_result[0]
-                    print("epoch_time", epoch_time)
+                    print("Epoch Time: ", epoch_time)
 
                 return_message = '{"time": ' + str(epoch_time) + ',"host": "' + str (host) + '","source": "'+ pattern['source'] +'"'
                 return_message = return_message + ',"sourcetype":"' + pattern['sourcetype'] + '"'
                 return_message = return_message + ',"index":"' + pattern['index'] + '"'
+                return_message = return_message + ',"account":"' + pattern['account'] + '"'
                 return_message = return_message + ',"event": ' + json.dumps(log_event['message']) + '}\n'
                 print(return_message)
     return return_message + '\n'
 
 
-def processRecords(records, config, streamName):
+def processRecords(records, config, streamName, aws_account_id):
     for r in records:
         data = base64.b64decode(r['data'])
         if IS_PY3:
@@ -101,7 +100,7 @@ def processRecords(records, config, streamName):
         elif data['messageType'] == 'DATA_MESSAGE':
             # source = data['logGroup'] + ":" + data['logStream']
             source = data['logGroup']
-            data = ''.join([transformLogEvent(e, source, data['owner'], config, streamName) for e in data['logEvents']])
+            data = ''.join([transformLogEvent(e, source, data['owner'], config, streamName, aws_account_id) for e in data['logEvents']])
             if IS_PY3:
                 data = base64.b64encode(data.encode('utf-8')).decode()
             else:
@@ -127,6 +126,7 @@ def createReingestionRecord(isSas, originalRecord):
 
 def handler(event, context):
     config = json.loads(ssm_client.get_parameter(Name='/pm/processor/config', WithDecryption=True)['Parameter']['Value'])
+    aws_account_id = context.invoked_function_arn.split(":")[4]
     # print("EVENT:")
     # print(event)
     # print("CONTEXT:")
@@ -136,7 +136,7 @@ def handler(event, context):
     streamARN = event['sourceKinesisStreamArn'] if isSas else event['deliveryStreamArn']
     region = streamARN.split(':')[3]
     streamName = streamARN.split('/')[1]
-    records = list(processRecords(event['records'], config, streamName))
+    records = list(processRecords(event['records'], config, streamName, aws_account_id))
     return {"records": records}
 
     # projectedSize = 0
