@@ -4,6 +4,18 @@ variable "name" {
   type        = string
 }
 
+variable "index" {
+  description = "The index in Splunk to send logs to"
+  default     = ""
+  type        = string
+}
+
+variable "host" {
+  description = "An optional host variable for when log file has no host entry"
+  default     = "localhost"
+  type        = string
+}
+
 variable "guardduty_rules" {
   description = "True if the GuardDuty Rules should be enabled."
   default     = "false"
@@ -349,11 +361,11 @@ variable "sasworkspace_cloudwatchlogs_hec_token" {
   type        = string
 }
 
-//variable "test_splunk_endpoint" {
-//  description = "Endpoint address for Test Splunk Instance"
-//  default     = ""
-//  type        = string
-//}
+variable "test_splunk_endpoint" {
+  description = "Endpoint address for Test Splunk Instance"
+  default     = ""
+  type        = string
+}
 
 variable "linux_audit_cloudwatch_logs_to_ship" {
   description = "Linux Audit CloudWatch Log Groups"
@@ -481,7 +493,31 @@ variable "denodo_vdp_queries_cloudwatch_logs_rules" {
 }
 
 variable "denodo_vdp_queries_cloudwatch_logs_logs_to_ship" {
-  description = "Denodo Syslog CloudWatch Log Groups"
+  description = "Denodo VDP Queries CloudWatch Log Groups"
+  default     = []
+  type        = list(string)
+}
+
+variable "denodo_vdp_threads_cloudwatch_logs_rules" {
+  description = "True if the Denodo VDP Threads CloudWatch Logs Rules should be enabled."
+  default     = "false"
+  type        = string
+}
+
+variable "denodo_vdp_threads_cloudwatch_logs_logs_to_ship" {
+  description = "Denodo Threads CloudWatch Log Groups"
+  default     = []
+  type        = list(string)
+}
+
+variable "denodo_vdp_log_cloudwatch_logs_rules" {
+  description = "True if the Denodo VDP Log CloudWatch Logs Rules should be enabled."
+  default     = "false"
+  type        = string
+}
+
+variable "denodo_vdp_log_cloudwatch_logs_logs_to_ship" {
+  description = "Denodo Log CloudWatch Log Groups"
   default     = []
   type        = list(string)
 }

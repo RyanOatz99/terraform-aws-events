@@ -5,6 +5,7 @@ import sys
 import gzip
 import re
 import datetime
+import time
 
 IS_PY3 = sys.version_info[0] == 3
 
@@ -36,22 +37,44 @@ def transformLogEvent(log_event, source, owner, config, streamName):
             print("LOOKING FOR ", pattern['date_regex'], " IN " , event)
             if date_result:
                 print("DATE_RESULT: ", date_result)
-                x = ''.join(date_result[0])
-                log_time = x.strip('"')
-
                 x = event.split()
-                host = x[1]
+                host_pos = int(pattern['host_pos'])
+                host = x[host_pos]
+                print("HOST: ", host)
 
-                utc_time = datetime.datetime.strptime(log_time, pattern['date_format'])
-                epoch_time = (utc_time - datetime.datetime(1970, 1, 1)).total_seconds()
+                if pattern['date_time'] == 'standard':
+                    x = ''.join(date_result[0])
+                    print("x: ", x)
+                    log_time = x.strip('"')
+                    print("log_time: ", log_time)
+
+                    try:
+                        if pattern['fix_year']:
+                            now = str(datetime.datetime.now().year)
+                            full_time = now + ' ' + log_time
+                            print("full_time: ", full_time)
+                            log_time = full_time
+                    except KeyError as e:
+                        pass
+
+                    utc_time = datetime.datetime.strptime(log_time, pattern['date_format'])
+                    print("utc_time: ", utc_time)
+                    epoch_time = (utc_time - datetime.datetime(1970, 1, 1)).total_seconds()
+                    if pattern['utc_offset']:
+                        utc_offset = time.localtime().tm_gmtoff
+                        epoch_time = epoch_time - utc_offset
+                    print("epoch_time", epoch_time)
+
+                else:
+                    epoch_time = date_result[0]
+                    print("epoch_time", epoch_time)
 
                 return_message = '{"time": ' + str(epoch_time) + ',"host": "' + str (host) + '","source": "'+ pattern['source'] +'"'
                 return_message = return_message + ',"sourcetype":"' + pattern['sourcetype'] + '"'
                 return_message = return_message + ',"index":"' + pattern['index'] + '"'
                 return_message = return_message + ',"event": ' + json.dumps(log_event['message']) + '}\n'
                 print(return_message)
-
-        return return_message + '\n'
+    return return_message + '\n'
 
 
 def processRecords(records, config, streamName):
@@ -114,49 +137,52 @@ def handler(event, context):
     region = streamARN.split(':')[3]
     streamName = streamARN.split('/')[1]
     records = list(processRecords(event['records'], config, streamName))
-    projectedSize = 0
-    dataByRecordId = {rec['recordId']: createReingestionRecord(isSas, rec) for rec in event['records']}
-    putRecordBatches = []
-    recordsToReingest = []
-    totalRecordsToBeReingested = 0
-
-    for idx, rec in enumerate(records):
-        if rec['result'] != 'Ok':
-            continue
-        projectedSize += len(rec['data']) + len(rec['recordId'])
-        # 6000000 instead of 6291456 to leave ample headroom for the stuff we didn't account for
-        if projectedSize > 6000000:
-            totalRecordsToBeReingested += 1
-            recordsToReingest.append(
-                getReingestionRecord(isSas, dataByRecordId[rec['recordId']])
-            )
-            records[idx]['result'] = 'Dropped'
-            del(records[idx]['data'])
-
-        # split out the record batches into multiple groups, 500 records at max per group
-        if len(recordsToReingest) == 500:
-            putRecordBatches.append(recordsToReingest)
-            recordsToReingest = []
-
-    if len(recordsToReingest) > 0:
-        # add the last batch
-        putRecordBatches.append(recordsToReingest)
-
-    # iterate and call putRecordBatch for each group
-    recordsReingestedSoFar = 0
-    if len(putRecordBatches) > 0:
-        kinesis_client = boto3.client('kinesis', region_name=region) if isSas else boto3.client('firehose', region_name=region)
-        for recordBatch in putRecordBatches:
-            if isSas:
-                putRecordsToKinesisStream(streamName, recordBatch, kinesis_client, attemptsMade=0, maxAttempts=20)
-            else:
-                putRecordsToFirehoseStream(streamName, recordBatch, kinesis_client, attemptsMade=0, maxAttempts=20)
-            recordsReingestedSoFar += len(recordBatch)
-            print('Reingested %d/%d records out of %d' % (recordsReingestedSoFar, totalRecordsToBeReingested, len(event['records'])))
-    else:
-        print('No records to be reingested')
-
     return {"records": records}
+
+    # projectedSize = 0
+    # dataByRecordId = {rec['recordId']: createReingestionRecord(isSas, rec) for rec in event['records']}
+    # putRecordBatches = []
+    # recordsToReingest = []
+    # totalRecordsToBeReingested = 0
+    #
+    # for idx, rec in enumerate(records):
+    #     if rec['result'] != 'Ok':
+    #         continue
+    #     projectedSize += len(rec['data']) + len(rec['recordId'])
+    #     # 6000000 instead of 6291456 to leave ample headroom for the stuff we didn't account for
+    #     if projectedSize > 6000000:
+    #         totalRecordsToBeReingested += 1
+    #         recordsToReingest.append(
+    #             getReingestionRecord(isSas, dataByRecordId[rec['recordId']])
+    #         )
+    #         records[idx]['result'] = 'Dropped'
+    #         del(records[idx]['data'])
+    #
+    #     # split out the record batches into multiple groups, 500 records at max per group
+    #     if len(recordsToReingest) == 500:
+    #         putRecordBatches.append(recordsToReingest)
+    #         recordsToReingest = []
+    #
+    # if len(recordsToReingest) > 0:
+    #     # add the last batch
+    #     putRecordBatches.append(recordsToReingest)
+    #
+    # # iterate and call putRecordBatch for each group
+    # recordsReingestedSoFar = 0
+    # if len(putRecordBatches) > 0:
+    #     kinesis_client = boto3.client('kinesis', region_name=region) if isSas else boto3.client('firehose', region_name=region)
+    #     for recordBatch in putRecordBatches:
+    #         if isSas:
+    #             putRecordsToKinesisStream(streamName, recordBatch, kinesis_client, attemptsMade=0, maxAttempts=20)
+    #         else:
+    #             putRecordsToFirehoseStream(streamName, recordBatch, kinesis_client, attemptsMade=0, maxAttempts=20)
+    #         recordsReingestedSoFar += len(recordBatch)
+    #         print('Reingested %d/%d records out of %d' % (recordsReingestedSoFar, totalRecordsToBeReingested, len(event['records'])))
+    # else:
+    #     print('No records to be reingested')
+
+    # return {"records": records}
+
 
     # json_param = json.loads(param['Parameter']['Value'])
 
