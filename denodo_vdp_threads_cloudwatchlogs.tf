@@ -7,7 +7,7 @@ resource "aws_cloudwatch_log_stream" "denodo_vdp_threads_kinesis_logs" {
 
 resource "aws_cloudwatch_log_group" "denodo_vdp_threads_kinesis_logs" {
   count = var.denodo_vdp_threads_cloudwatch_logs_rules == "true" ? 1 : 0
-  name  = "/denodo/kinesis/vdp-threads/"
+  name  = "/denodo/firehose/vdp-threads/"
 }
 
 #Create the subscription filter
@@ -40,7 +40,7 @@ resource "aws_kinesis_firehose_delivery_stream" "denodo_vdp_threads_cloudwatchlo
 
   splunk_configuration {
     hec_endpoint      = var.splunk_endpoint
-    hec_token         = var.denodo_vdp_threads_cloudwatch_logs_hec_token
+    hec_token         = var.denodo_vdp_thread
     hec_endpoint_type = "Event"
     s3_backup_mode    = "FailedEventsOnly"
 

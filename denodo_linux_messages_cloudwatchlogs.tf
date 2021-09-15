@@ -7,7 +7,7 @@ resource "aws_cloudwatch_log_stream" "denodo_linux_messages_kinesis_logs" {
 
 resource "aws_cloudwatch_log_group" "denodo_linux_messages_kinesis_logs" {
   count = var.denodo_linux_messages_cloudwatch_logs_rules == "true" ? 1 : 0
-  name  = "/denodo-linux-messages-kinesis-logs/"
+  name  = "/denodo/firehose/linux-messages/"
 }
 
 #Create the subscription filter
@@ -67,7 +67,7 @@ resource "aws_kinesis_firehose_delivery_stream" "denodo_linux_messages_cloudwatc
 
 resource "aws_cloudwatch_log_group" "denodo_linux_messages_cloudwatch_logs_firehose" {
   count = var.denodo_linux_messages_cloudwatch_logs_rules == "true" ? 1 : 0
-  name  = "/denodo-linux-messages-cloudwatch-logs-firehose/"
+  name  = "/denodo/firehose/linux-messages/"
 }
 
 resource "aws_cloudwatch_log_stream" "denodo_linux_messages_cloudwatch_logs_firehose" {

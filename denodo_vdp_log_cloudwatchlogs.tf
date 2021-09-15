@@ -7,7 +7,7 @@ resource "aws_cloudwatch_log_stream" "denodo_vdp_log_kinesis_logs" {
 
 resource "aws_cloudwatch_log_group" "denodo_vdp_log_kinesis_logs" {
   count = var.denodo_vdp_log_cloudwatch_logs_rules == "true" ? 1 : 0
-  name  = "/denodo/kinesis/vdp-log/"
+  name  = "/denodo/firehose/vdp-log/"
 }
 
 #Create the subscription filter

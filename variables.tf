@@ -320,6 +320,18 @@ variable "denodo_vdp_queries_cloudwatch_logs_hec_token" {
   type        = string
 }
 
+variable "denodo_vdp_threads_cloudwatch_logs_hec_token" {
+  description = "Denodo VDP Threads CloudWatchLogs HEC Token for use with Splunk Endpoint"
+  default     = ""
+  type        = string
+}
+
+variable "denodo_vdp_log_cloudwatch_logs_hec_token" {
+  description = "Denodo VDP Log CloudWatchLogs HEC Token for use with Splunk Endpoint"
+  default     = ""
+  type        = string
+}
+
 variable "linux_audit_cloudwatchlogs_hec_token" {
   description = "Linux Audit CloudWatchLogs HEC Token for use with Splunk Endpoint"
   default     = ""

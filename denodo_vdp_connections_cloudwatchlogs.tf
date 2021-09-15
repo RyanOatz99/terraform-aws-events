@@ -7,7 +7,7 @@ resource "aws_cloudwatch_log_stream" "denodo_vdp_connections_kinesis_logs" {
 
 resource "aws_cloudwatch_log_group" "denodo_vdp_connections_kinesis_logs" {
   count = var.denodo_vdp_connections_cloudwatch_logs_rules == "true" ? 1 : 0
-  name  = "/denodo-vdp-connections-kinesis-logs/"
+  name  = "/denodo/firehose/vdp-connections/"
 }
 
 #Create the subscription filter
@@ -67,7 +67,7 @@ resource "aws_kinesis_firehose_delivery_stream" "denodo_vdp_connections_cloudwat
 
 resource "aws_cloudwatch_log_group" "denodo_vdp_connections_cloudwatch_logs_firehose" {
   count = var.denodo_vdp_connections_cloudwatch_logs_rules == "true" ? 1 : 0
-  name  = "/firehose/denodo/vdp-connections"
+  name  = "/denodo/firehose/vdp-connections"
 }
 
 resource "aws_cloudwatch_log_stream" "denodo_vdp_connections_cloudwatch_logs_firehose" {
