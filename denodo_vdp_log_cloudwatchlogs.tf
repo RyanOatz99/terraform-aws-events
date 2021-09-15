@@ -1,15 +1,3 @@
-# Create the stream
-//resource "aws_cloudwatch_log_stream" "denodo_vdp_log_kinesis_logs" {
-//  count          = var.denodo_vdp_log_cloudwatch_logs_rules == "true" ? 1 : 0
-//  name           = var.log_stream_name
-//  log_group_name = aws_cloudwatch_log_group.denodo_vdp_log_kinesis_logs[0].name
-//}
-//
-//resource "aws_cloudwatch_log_group" "denodo_vdp_log_kinesis_logs" {
-//  count = var.denodo_vdp_log_cloudwatch_logs_rules == "true" ? 1 : 0
-//  name  = "/denodo/firehose/vdp-log/"
-//}
-
 #Create the subscription filter
 resource "aws_cloudwatch_log_subscription_filter" "denodo_vdp_log_cloudwatch_logs_to_firehose" {
   count           = length(var.denodo_vdp_log_cloudwatch_logs_logs_to_ship)
