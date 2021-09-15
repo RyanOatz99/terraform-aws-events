@@ -40,7 +40,7 @@ resource "aws_kinesis_firehose_delivery_stream" "denodo_vdp_threads_cloudwatchlo
 
   splunk_configuration {
     hec_endpoint      = var.splunk_endpoint
-    hec_token         = var.denodo_vdp_thread
+    hec_token         = var.denodo_vdp_threads_cloudwatch_logs_hec_token
     hec_endpoint_type = "Event"
     s3_backup_mode    = "FailedEventsOnly"
 
