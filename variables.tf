@@ -4,6 +4,18 @@ variable "name" {
   type        = string
 }
 
+variable "index" {
+  description = "The index in Splunk to send logs to"
+  default     = ""
+  type        = string
+}
+
+variable "host" {
+  description = "An optional host variable for when log file has no host entry"
+  default     = "localhost"
+  type        = string
+}
+
 variable "guardduty_rules" {
   description = "True if the GuardDuty Rules should be enabled."
   default     = "false"
@@ -280,7 +292,7 @@ variable "vpcflowlogs_cloudwatch_log_group_retention_in_days" {
 
 variable "vpcflowlogs_cloudwatch_log_group_name" {
   description = "CloudWatch Log Group VPC Flow Log Name"
-  default     = "vpcflowlogs-splunk"
+  default     = "/pm/aws/vpcflowlogs/"
   type        = string
 }
 
@@ -304,6 +316,18 @@ variable "denodo_vdp_connections_cloudwatch_logs_hec_token" {
 
 variable "denodo_vdp_queries_cloudwatch_logs_hec_token" {
   description = "Denodo VDP Queries CloudWatchLogs HEC Token for use with Splunk Endpoint"
+  default     = ""
+  type        = string
+}
+
+variable "denodo_vdp_threads_cloudwatch_logs_hec_token" {
+  description = "Denodo VDP Threads CloudWatchLogs HEC Token for use with Splunk Endpoint"
+  default     = ""
+  type        = string
+}
+
+variable "denodo_vdp_log_cloudwatch_logs_hec_token" {
+  description = "Denodo VDP Log CloudWatchLogs HEC Token for use with Splunk Endpoint"
   default     = ""
   type        = string
 }
@@ -481,7 +505,31 @@ variable "denodo_vdp_queries_cloudwatch_logs_rules" {
 }
 
 variable "denodo_vdp_queries_cloudwatch_logs_logs_to_ship" {
-  description = "Denodo Syslog CloudWatch Log Groups"
+  description = "Denodo VDP Queries CloudWatch Log Groups"
+  default     = []
+  type        = list(string)
+}
+
+variable "denodo_vdp_threads_cloudwatch_logs_rules" {
+  description = "True if the Denodo VDP Threads CloudWatch Logs Rules should be enabled."
+  default     = "false"
+  type        = string
+}
+
+variable "denodo_vdp_threads_cloudwatch_logs_logs_to_ship" {
+  description = "Denodo Threads CloudWatch Log Groups"
+  default     = []
+  type        = list(string)
+}
+
+variable "denodo_vdp_log_cloudwatch_logs_rules" {
+  description = "True if the Denodo VDP Log CloudWatch Logs Rules should be enabled."
+  default     = "false"
+  type        = string
+}
+
+variable "denodo_vdp_log_cloudwatch_logs_logs_to_ship" {
+  description = "Denodo Log CloudWatch Log Groups"
   default     = []
   type        = list(string)
 }
