@@ -58,7 +58,7 @@ locals {
         streamname = "${var.name}.linux_audit_cloudwatchlogs"
         date_regex = "(\\d{10}\\.\\d{3})"
         date_time  = "epoch"
-        utc_offset  = "false"
+        utc_offset = "false"
         sourcetype = "linux:audit"
         source     = "/var/log/audit"
         index      = var.index
