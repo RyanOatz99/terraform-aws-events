@@ -17,20 +17,23 @@ else:
 
 ssm_client = boto3.client('ssm')
 
-def transformLogEvent(log_event, source, owner, config, streamName, aws_account_id):
+
+def transformLogEvent(log_event, source, owner, config, streamName):
     return_message = "EVENT_NOT_FOUND"
-    print(" Event: ", log_event)
-    print("Source: ", source)
-    print(" Owner: ", owner)
-    print("Config: ", config)
+    print("  Event: ", log_event)
+    print(" Source: ", source)
+    print("Account: ", owner)
+    print(" Config: ", config)
     event = log_event['message']
 
     for pattern in config['patterns']:
-        print("Searching for '", streamName , "' in config '", pattern['streamname'], "'")
+        print("Searching for ", streamName, " in config ", pattern['streamname'])
         result = re.findall(streamName, pattern['streamname'])
+
         if result:
             date_result = re.findall(pattern['date_regex'], event)
-            print("Searching for '", pattern['date_regex'], "' in '", event, "'")
+            print("Searching for ", pattern['date_regex'], " in ", event)
+
             if date_result:
                 print("Found Date Result: ", date_result)
                 x = event.split()
@@ -39,7 +42,7 @@ def transformLogEvent(log_event, source, owner, config, streamName, aws_account_
                 print("Found Host: ", host)
 
                 if pattern['date_time'] == 'standard':
-                    print("Using '", pattern['date_time'], "'")
+                    print("Using ", pattern['date_time'])
                     x = ''.join(date_result[0])
                     log_time = x.strip('"')
                     print("Log Time: ", log_time)
@@ -62,7 +65,6 @@ def transformLogEvent(log_event, source, owner, config, streamName, aws_account_
                         utc_offset = time.localtime().tm_gmtoff
                         epoch_time = epoch_time - utc_offset
                     print("Epoch Time: ", epoch_time)
-
                 else:
                     epoch_time = date_result[0]
                     print("Epoch Time: ", epoch_time)
@@ -70,13 +72,13 @@ def transformLogEvent(log_event, source, owner, config, streamName, aws_account_
                 return_message = '{"time": ' + str(epoch_time) + ',"host": "' + str (host) + '","source": "'+ pattern['source'] +'"'
                 return_message = return_message + ',"sourcetype":"' + pattern['sourcetype'] + '"'
                 return_message = return_message + ',"index":"' + pattern['index'] + '"'
-                return_message = return_message + ',"account":"' + pattern['account'] + '"'
+                # return_message = return_message + ',"account":"' + owner + '"'
                 return_message = return_message + ',"event": ' + json.dumps(log_event['message']) + '}\n'
                 print(return_message)
     return return_message + '\n'
 
 
-def processRecords(records, config, streamName, aws_account_id):
+def processRecords(records, config, streamName):
     for r in records:
         data = base64.b64decode(r['data'])
         if IS_PY3:
@@ -100,7 +102,7 @@ def processRecords(records, config, streamName, aws_account_id):
         elif data['messageType'] == 'DATA_MESSAGE':
             # source = data['logGroup'] + ":" + data['logStream']
             source = data['logGroup']
-            data = ''.join([transformLogEvent(e, source, data['owner'], config, streamName, aws_account_id) for e in data['logEvents']])
+            data = ''.join([transformLogEvent(e, source, data['owner'], config, streamName) for e in data['logEvents']])
             if IS_PY3:
                 data = base64.b64encode(data.encode('utf-8')).decode()
             else:
@@ -126,7 +128,6 @@ def createReingestionRecord(isSas, originalRecord):
 
 def handler(event, context):
     config = json.loads(ssm_client.get_parameter(Name='/pm/processor/config', WithDecryption=True)['Parameter']['Value'])
-    aws_account_id = context.invoked_function_arn.split(":")[4]
     # print("EVENT:")
     # print(event)
     # print("CONTEXT:")
@@ -136,7 +137,7 @@ def handler(event, context):
     streamARN = event['sourceKinesisStreamArn'] if isSas else event['deliveryStreamArn']
     region = streamARN.split(':')[3]
     streamName = streamARN.split('/')[1]
-    records = list(processRecords(event['records'], config, streamName, aws_account_id))
+    records = list(processRecords(event['records'], config, streamName))
     return {"records": records}
 
     # projectedSize = 0
