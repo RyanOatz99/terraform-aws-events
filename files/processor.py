@@ -73,7 +73,7 @@ def transformLogEvent(log_event, source, owner, config, streamName):
                 return_message = return_message + ',"sourcetype":"' + pattern['sourcetype'] + '"'
                 return_message = return_message + ',"index":"' + pattern['index'] + '"'
                 # return_message = return_message + ',"account":"' + owner + '"'
-                return_message = return_message + ',"event": ' + json.dumps(log_event['message']) + '}\n'
+                return_message = return_message + ',"event": {"message": ' + json.dumps(log_event['message']) + ', "account": "' + owner + '"}}\n'
                 print(return_message)
     return return_message + '\n'
 
