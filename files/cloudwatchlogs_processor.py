@@ -14,10 +14,12 @@ else:
 
 def transformLogEvent(log_event, source):
 
-    str_add= source
-    str_msg = log_event['message']
-    str_return = str_msg + '" onshost:' + str_add
-    return str_return + '\n'
+    return_event = {}
+    return_event = ["time"] = log_event["timestamp"]
+    return_event = ["source"] = source
+    return_event = ["event"] = log_event["message"]
+    print(return_event)
+    return json.dumps(return_event) + '\n'
 
 def processRecords(records):
     for r in records:
