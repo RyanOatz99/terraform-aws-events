@@ -17,9 +17,9 @@ else:
 
 
 def transformLogEvent(log_event, source, logGroup):
-    sourcetype="ssm"
-    source="aws/ssm"
-    host="ssm"
+    sourcetype = "ssm"
+    source = "aws/ssm"
+    host = "ssm"
 
     pattern='(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) '
     test_string = log_event['message']
@@ -42,10 +42,9 @@ def transformLogEvent(log_event, source, logGroup):
 
 
     #print(time.localtime().tm_isdst)
-    return_message = '{"time": ' + str (epoch_time) + ',"host": "' + str (host) + '","source": "'+ source +'"'
-    #return_message = '{"time": ' + str (epoch_time) ',"host": "' + host + ' +  ',"source": "'+ source +'"'
+    return_message = '{"time": ' + str(epoch_time) + ',"host": "' + str(host) + '","source": "' + source + '"'
     return_message = return_message + ',"sourcetype":"' + sourcetype + '"'
-    return_message = return_message + ',"event": ' + json.dumps(log_event['message']) + '}\n'
+    return_message = return_message + ',"event": {"message":' + json.dumps(log_event['message']) + '}}\n'
     print(return_message)
     return return_message + '\n'
 

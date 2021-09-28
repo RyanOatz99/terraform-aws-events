@@ -23,14 +23,14 @@ def transformLogEvent(log_event,acct,arn,loggrp,logstrm,filterName):
     region_name=arn.split(':')[3]
     # note that the region_name is taken from the region for the Stream, this won't change if Cloudwatch from another account/region. Not used for this example function
     if "CloudTrail" in loggrp:
-        sourcetype="aws:cloudtrail"
+        sourcetype = "aws:cloudtrail"
     elif "VPC" in loggrp:
-        sourcetype="aws:cloudwatchlogs:vpcflow"
+        sourcetype = "aws:cloudwatchlogs:vpcflow"
     else:
-        sourcetype="sas:workspace"
-        source="cep-sas/workspace"
-        host="cep-sas"
-   #pattern= '\d+\.\d+'
+        sourcetype = "sas:workspace"
+        source = "cep-sas/workspace"
+        host = "cep-sas"
+
     pattern='(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2},\d{3}) '
     test_string = log_event['message']
     result = re.findall(pattern, test_string)
@@ -53,9 +53,9 @@ def transformLogEvent(log_event,acct,arn,loggrp,logstrm,filterName):
 
     #print(time.localtime().tm_isdst)
 
-    return_message = '{"time": ' + str (epoch_time) + ',"host": "' + str (host) + '","source": "'+ source +'"'
+    return_message = '{"time": ' + str(epoch_time) + ',"host": "' + str(host) + '","source": "' + source + '"'
     return_message = return_message + ',"sourcetype":"' + sourcetype + '"'
-    return_message = return_message + ',"event": ' + json.dumps(log_event['message']) + '}\n'
+    return_message = return_message + ',"event": {"message":' + json.dumps(log_event['message']) + '}}\n'
     print(return_message)
     return return_message + '\n'
 

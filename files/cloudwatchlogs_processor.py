@@ -13,13 +13,14 @@ else:
 
 
 def transformLogEvent(log_event, source):
+    sourcetype = "cwl"
 
-    return_event = {}
-    return_event = ["time"] = log_event["timestamp"]
-    return_event = ["source"] = source
-    return_event = ["event"] = log_event["message"]
-    print(return_event)
-    return json.dumps(return_event) + '\n'
+    return_message = '{"time": ' + str(log_event["timestamp"]) + '","source": "' + source + '"'
+    return_message = return_message + ',"sourcetype":"' + sourcetype + '"'
+    return_message = return_message + ',"event": {"message":' + json.dumps(log_event['message']) + '}}\n'
+    print(return_message)
+    return return_message + '\n'
+
 
 def processRecords(records):
     for r in records:
@@ -129,7 +130,8 @@ def putRecordsToKinesisStream(streamName, records, client, attemptsMade, maxAtte
 
 def createReingestionRecord(isSas, originalRecord):
     if isSas:
-        return {'data': base64.b64decode(originalRecord['data']), 'partitionKey': originalRecord['kinesisRecordMetadata']['partitionKey']}
+        return {'data': base64.b64decode(originalRecord['data']),
+                'partitionKey': originalRecord['kinesisRecordMetadata']['partitionKey']}
     else:
         return {'data': base64.b64decode(originalRecord['data'])}
 
@@ -164,7 +166,7 @@ def handler(event, context):
                 getReingestionRecord(isSas, dataByRecordId[rec['recordId']])
             )
             records[idx]['result'] = 'Dropped'
-            del(records[idx]['data'])
+            del (records[idx]['data'])
 
         # split out the record batches into multiple groups, 500 records at max per group
         if len(recordsToReingest) == 500:
@@ -185,7 +187,8 @@ def handler(event, context):
             else:
                 putRecordsToFirehoseStream(streamName, recordBatch, client, attemptsMade=0, maxAttempts=20)
             recordsReingestedSoFar += len(recordBatch)
-            print('Reingested %d/%d records out of %d' % (recordsReingestedSoFar, totalRecordsToBeReingested, len(event['records'])))
+            print('Reingested %d/%d records out of %d' % (
+            recordsReingestedSoFar, totalRecordsToBeReingested, len(event['records'])))
     else:
         print('No records to be reingested')
 
