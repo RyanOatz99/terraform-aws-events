@@ -32,7 +32,7 @@ resource "aws_lambda_function" "cloudwatchlogs_processor" {
   role             = aws_iam_role.events_processor.arn
   handler          = "cloudwatchlogs_processor.handler"
   source_code_hash = filebase64sha256("${path.module}/files/cloudwatchlogs_processor.zip")
-  runtime          = "python3.8"
+  runtime          = "python3.9"
   timeout          = 300
   memory_size      = 512
   environment {

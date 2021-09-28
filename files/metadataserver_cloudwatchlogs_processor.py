@@ -10,7 +10,6 @@ import decimal
 import dateutil
 import time
 
-
 IS_PY3 = sys.version_info[0] == 3
 if IS_PY3:
     import io
@@ -18,48 +17,47 @@ else:
     import StringIO
 
 
-def transformLogEvent(log_event,acct,arn,loggrp,logstrm,filterName):
-
-    region_name=arn.split(':')[3]
+def transformLogEvent(log_event, acct, arn, loggrp, logstrm, filterName):
+    region_name = arn.split(':')[3]
     # note that the region_name is taken from the region for the Stream, this won't change if Cloudwatch from another account/region. Not used for this example function
     if "CloudTrail" in loggrp:
-        sourcetype="aws:cloudtrail"
+        sourcetype = "aws:cloudtrail"
     elif "VPC" in loggrp:
-        sourcetype="aws:cloudwatchlogs:vpcflow"
+        sourcetype = "aws:cloudwatchlogs:vpcflow"
     else:
-        sourcetype="sas:metadata"
-        source="cep-sas/metadata"
-        host="cep-sas"
-   #pattern= '\d+\.\d+'
-    pattern='(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2},\d{3}) '
+        sourcetype = "sas:metadata"
+        source = "cep-sas/metadata"
+        host = "cep-sas"
+    # pattern= '\d+\.\d+'
+    pattern = '(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2},\d{3}) '
     test_string = log_event['message']
     result = re.findall(pattern, test_string)
     x = result[0]
     x = ''.join(result[0])
     ev_time = x.strip('"')
-    #print(ev_time)
+    # print(ev_time)
 
     utc_time = datetime.datetime.strptime(ev_time, "%Y-%m-%dT%H:%M:%S,%f")
-    #print(utc_time)
+    # print(utc_time)
 
     epoch_time = (utc_time - datetime.datetime(1970, 1, 1)).total_seconds()
-    #print(epoch_time)
+    # print(epoch_time)
 
     utc_offset = time.localtime().tm_gmtoff
-    #print(utc_offset)
+    # print(utc_offset)
     epoch_time = epoch_time - utc_offset
-    #print(epoch_time)
+    # print(epoch_time)
 
+    # print(time.localtime().tm_isdst)
 
-    #print(time.localtime().tm_isdst)
-
-    return_message = '{"time": ' + str (epoch_time) + ',"host": "' + str (host) + '","source": "'+ source +'"'
+    return_message = '{"time": ' + str(epoch_time) + ',"host": "' + str(host) + '","source": "' + source + '"'
     return_message = return_message + ',"sourcetype":"' + sourcetype + '"'
-    return_message = return_message + ',"event": ' + json.dumps(log_event['message']) + '}\n'
+    return_message = return_message + ',"event": {"message":' + json.dumps(log_event['message']) + '}}\n'
     print(return_message)
     return return_message + '\n'
 
-def processRecords(records,arn):
+
+def processRecords(records, arn):
     for r in records:
         data = base64.b64decode(r['data'])
         if IS_PY3:
@@ -80,7 +78,8 @@ def processRecords(records,arn):
                 'recordId': recId
             }
         elif data['messageType'] == 'DATA_MESSAGE':
-            data = ''.join([transformLogEvent(e,data['owner'],arn,data['logGroup'],data['logStream'],data['subscriptionFilters'][0]) for e in data['logEvents']])
+            data = ''.join([transformLogEvent(e, data['owner'], arn, data['logGroup'], data['logStream'],
+                                              data['subscriptionFilters'][0]) for e in data['logEvents']])
             if IS_PY3:
                 data = base64.b64encode(data.encode('utf-8')).decode()
             else:
@@ -165,7 +164,8 @@ def putRecordsToKinesisStream(streamName, records, client, attemptsMade, maxAtte
 
 def createReingestionRecord(isSas, originalRecord):
     if isSas:
-        return {'data': base64.b64decode(originalRecord['data']), 'partitionKey': originalRecord['kinesisRecordMetadata']['partitionKey']}
+        return {'data': base64.b64decode(originalRecord['data']),
+                'partitionKey': originalRecord['kinesisRecordMetadata']['partitionKey']}
     else:
         return {'data': base64.b64decode(originalRecord['data'])}
 
@@ -183,7 +183,7 @@ def handler(event, context):
     region = streamARN.split(':')[3]
     streamName = streamARN.split('/')[1]
 
-    records = list(processRecords(event['records'],streamARN))
+    records = list(processRecords(event['records'], streamARN))
     projectedSize = 0
     dataByRecordId = {rec['recordId']: createReingestionRecord(isSas, rec) for rec in event['records']}
     putRecordBatches = []
@@ -201,7 +201,7 @@ def handler(event, context):
                 getReingestionRecord(isSas, dataByRecordId[rec['recordId']])
             )
             records[idx]['result'] = 'Dropped'
-            del(records[idx]['data'])
+            del (records[idx]['data'])
 
         # split out the record batches into multiple groups, 500 records at max per group
         if len(recordsToReingest) == 500:
@@ -222,7 +222,8 @@ def handler(event, context):
             else:
                 putRecordsToFirehoseStream(streamName, recordBatch, client, attemptsMade=0, maxAttempts=20)
             recordsReingestedSoFar += len(recordBatch)
-            print('Reingested %d/%d records out of %d' % (recordsReingestedSoFar, totalRecordsToBeReingested, len(event['records'])))
+            print('Reingested %d/%d records out of %d' % (
+            recordsReingestedSoFar, totalRecordsToBeReingested, len(event['records'])))
     else:
         print('No records to be reingested')
 
