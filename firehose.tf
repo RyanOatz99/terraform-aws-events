@@ -15,10 +15,11 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudwatch_events" {
   }
 
   splunk_configuration {
-    hec_endpoint      = var.splunk_endpoint
-    hec_token         = var.cloudwatchevents_hec_token
-    hec_endpoint_type = "Event"
-    s3_backup_mode    = "FailedEventsOnly"
+    hec_endpoint               = var.splunk_endpoint
+    hec_token                  = var.cloudwatchevents_hec_token
+    hec_acknowledgment_timeout = 600
+    hec_endpoint_type          = "Event"
+    s3_backup_mode             = "FailedEventsOnly"
 
     processing_configuration {
       enabled = "true"
@@ -67,10 +68,11 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudtrail_events_firehose" {
   }
 
   splunk_configuration {
-    hec_endpoint      = var.splunk_endpoint
-    hec_token         = var.cloudtrail_hec_token
-    hec_endpoint_type = "Raw"
-    s3_backup_mode    = "FailedEventsOnly"
+    hec_endpoint               = var.splunk_endpoint
+    hec_token                  = var.cloudtrail_hec_token
+    hec_acknowledgment_timeout = 600
+    hec_endpoint_type          = "Raw"
+    s3_backup_mode             = "FailedEventsOnly"
 
     processing_configuration {
       enabled = "false"
@@ -119,10 +121,11 @@ resource "aws_kinesis_firehose_delivery_stream" "guardduty_events_firehose" {
   }
 
   splunk_configuration {
-    hec_endpoint      = var.splunk_endpoint
-    hec_token         = var.guardduty_hec_token
-    hec_endpoint_type = "Event"
-    s3_backup_mode    = "FailedEventsOnly"
+    hec_endpoint               = var.splunk_endpoint
+    hec_token                  = var.guardduty_hec_token
+    hec_acknowledgment_timeout = 600
+    hec_endpoint_type          = "Event"
+    s3_backup_mode             = "FailedEventsOnly"
 
     processing_configuration {
       enabled = "true"
@@ -171,10 +174,11 @@ resource "aws_kinesis_firehose_delivery_stream" "securityhub_events_firehose" {
   }
 
   splunk_configuration {
-    hec_endpoint      = var.splunk_endpoint
-    hec_token         = var.securityhub_hec_token
-    hec_endpoint_type = "Event"
-    s3_backup_mode    = "FailedEventsOnly"
+    hec_endpoint               = var.splunk_endpoint
+    hec_token                  = var.securityhub_hec_token
+    hec_acknowledgment_timeout = 600
+    hec_endpoint_type          = "Event"
+    s3_backup_mode             = "FailedEventsOnly"
 
     processing_configuration {
       enabled = "true"
@@ -224,10 +228,11 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudwatchlogs_firehose" {
   }
 
   splunk_configuration {
-    hec_endpoint      = var.splunk_endpoint
-    hec_token         = var.cloudwatchlogs_hec_token
-    hec_endpoint_type = "Event"
-    s3_backup_mode    = "FailedEventsOnly"
+    hec_endpoint               = var.splunk_endpoint
+    hec_token                  = var.cloudwatchlogs_hec_token
+    hec_acknowledgment_timeout = 600
+    hec_endpoint_type          = "Event"
+    s3_backup_mode             = "FailedEventsOnly"
 
     processing_configuration {
       enabled = "true"
@@ -279,10 +284,11 @@ resource "aws_kinesis_firehose_delivery_stream" "vpcflowlogs_firehose" {
   }
 
   splunk_configuration {
-    hec_endpoint      = var.splunk_endpoint
-    hec_token         = var.vpcflowlogs_hec_token
-    hec_endpoint_type = "Event"
-    s3_backup_mode    = "FailedEventsOnly"
+    hec_endpoint               = var.splunk_endpoint
+    hec_token                  = var.vpcflowlogs_hec_token
+    hec_acknowledgment_timeout = 600
+    hec_endpoint_type          = "Event"
+    s3_backup_mode             = "FailedEventsOnly"
 
     processing_configuration {
       enabled = "true"
@@ -334,10 +340,11 @@ resource "aws_kinesis_firehose_delivery_stream" "linux_audit_cloudwatchlogs_fire
   }
 
   splunk_configuration {
-    hec_endpoint      = var.splunk_endpoint
-    hec_token         = var.linux_audit_cloudwatchlogs_hec_token
-    hec_endpoint_type = "Event"
-    s3_backup_mode    = "FailedEventsOnly"
+    hec_endpoint               = var.splunk_endpoint
+    hec_token                  = var.linux_audit_cloudwatchlogs_hec_token
+    hec_acknowledgment_timeout = 600
+    hec_endpoint_type          = "Event"
+    s3_backup_mode             = "FailedEventsOnly"
 
     processing_configuration {
       enabled = "true"
@@ -389,10 +396,11 @@ resource "aws_kinesis_firehose_delivery_stream" "linux_syslog_cloudwatchlogs_fir
   }
 
   splunk_configuration {
-    hec_endpoint      = var.splunk_endpoint
-    hec_token         = var.linux_syslog_cloudwatchlogs_hec_token
-    hec_endpoint_type = "Event"
-    s3_backup_mode    = "FailedEventsOnly"
+    hec_endpoint               = var.splunk_endpoint
+    hec_token                  = var.linux_syslog_cloudwatchlogs_hec_token
+    hec_acknowledgment_timeout = 600
+    hec_endpoint_type          = "Event"
+    s3_backup_mode             = "FailedEventsOnly"
 
     processing_configuration {
       enabled = "true"
@@ -444,10 +452,11 @@ resource "aws_kinesis_firehose_delivery_stream" "metadataserver_cloudwatchlogs_f
   }
 
   splunk_configuration {
-    hec_endpoint      = var.splunk_endpoint
-    hec_token         = var.metadataserver_cloudwatchlogs_hec_token
-    hec_endpoint_type = "Event"
-    s3_backup_mode    = "FailedEventsOnly"
+    hec_endpoint               = var.splunk_endpoint
+    hec_token                  = var.metadataserver_cloudwatchlogs_hec_token
+    hec_acknowledgment_timeout = 600
+    hec_endpoint_type          = "Event"
+    s3_backup_mode             = "FailedEventsOnly"
 
     processing_configuration {
       enabled = "true"
@@ -499,10 +508,11 @@ resource "aws_kinesis_firehose_delivery_stream" "storagegw_cloudwatchlogs_fireho
   }
 
   splunk_configuration {
-    hec_endpoint      = var.splunk_endpoint
-    hec_token         = var.storagegw_cloudwatchlogs_hec_token
-    hec_endpoint_type = "Event"
-    s3_backup_mode    = "FailedEventsOnly"
+    hec_endpoint               = var.splunk_endpoint
+    hec_token                  = var.storagegw_cloudwatchlogs_hec_token
+    hec_acknowledgment_timeout = 600
+    hec_endpoint_type          = "Event"
+    s3_backup_mode             = "FailedEventsOnly"
 
     processing_configuration {
       enabled = "true"
@@ -554,10 +564,11 @@ resource "aws_kinesis_firehose_delivery_stream" "linux_secure_cloudwatchlogs_fir
   }
 
   splunk_configuration {
-    hec_endpoint      = var.splunk_endpoint
-    hec_token         = var.linux_secure_cloudwatchlogs_hec_token
-    hec_endpoint_type = "Event"
-    s3_backup_mode    = "FailedEventsOnly"
+    hec_endpoint               = var.splunk_endpoint
+    hec_token                  = var.linux_secure_cloudwatchlogs_hec_token
+    hec_acknowledgment_timeout = 600
+    hec_endpoint_type          = "Event"
+    s3_backup_mode             = "FailedEventsOnly"
 
     processing_configuration {
       enabled = "true"
@@ -609,10 +620,11 @@ resource "aws_kinesis_firehose_delivery_stream" "ssm_cloudwatchlogs_firehose" {
   }
 
   splunk_configuration {
-    hec_endpoint      = var.splunk_endpoint
-    hec_token         = var.ssm_cloudwatchlogs_hec_token
-    hec_endpoint_type = "Event"
-    s3_backup_mode    = "FailedEventsOnly"
+    hec_endpoint               = var.splunk_endpoint
+    hec_token                  = var.ssm_cloudwatchlogs_hec_token
+    hec_acknowledgment_timeout = 600
+    hec_endpoint_type          = "Event"
+    s3_backup_mode             = "FailedEventsOnly"
 
     processing_configuration {
       enabled = "true"
@@ -664,10 +676,11 @@ resource "aws_kinesis_firehose_delivery_stream" "sasworkspace_cloudwatchlogs_fir
   }
 
   splunk_configuration {
-    hec_endpoint      = var.splunk_endpoint
-    hec_token         = var.sasworkspace_cloudwatchlogs_hec_token
-    hec_endpoint_type = "Event"
-    s3_backup_mode    = "FailedEventsOnly"
+    hec_endpoint               = var.splunk_endpoint
+    hec_token                  = var.sasworkspace_cloudwatchlogs_hec_token
+    hec_acknowledgment_timeout = 600
+    hec_endpoint_type          = "Event"
+    s3_backup_mode             = "FailedEventsOnly"
 
     processing_configuration {
       enabled = "true"

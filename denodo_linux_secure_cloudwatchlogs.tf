@@ -27,10 +27,11 @@ resource "aws_kinesis_firehose_delivery_stream" "denodo_linux_secure_cloudwatchl
   }
 
   splunk_configuration {
-    hec_endpoint      = var.splunk_endpoint
-    hec_token         = var.denodo_linux_secure_cloudwatch_logs_hec_token
-    hec_endpoint_type = "Event"
-    s3_backup_mode    = "FailedEventsOnly"
+    hec_endpoint               = var.splunk_endpoint
+    hec_token                  = var.denodo_linux_secure_cloudwatch_logs_hec_token
+    hec_acknowledgment_timeout = 600
+    hec_endpoint_type          = "Event"
+    s3_backup_mode             = "FailedEventsOnly"
 
     processing_configuration {
       enabled = "true"
