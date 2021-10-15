@@ -533,3 +533,21 @@ variable "denodo_vdp_log_cloudwatch_logs_logs_to_ship" {
   default     = []
   type        = list(string)
 }
+
+variable "linux_messages_cloudwatchlogs_hec_token" {
+  description = "linux messages CloudWatchLogs HEC Token for use with Splunk Endpoint"
+  default     = ""
+  type        = string
+}
+
+variable "linux_messages_cloudwatch_logs_rules" {
+  description = "True if the Linux Messages CloudWatch Logs Rules should be enabled."
+  default     = "false"
+  type        = string
+}
+
+variable "linux_messages_cloudwatch_logs_to_ship" {
+  description = "linux messages CloudWatch Log Groups"
+  default     = []
+  type        = list(string)
+}
