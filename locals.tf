@@ -66,6 +66,19 @@ locals {
       },
       {
         name        = "linux_messages"
+        streamname  = "${var.name}.linux_messages_cloudwatchlogs"
+        date_regex  = "(\\w{3}\\s{1,2}\\d+ \\d{2}:\\d{2}:\\d{2})"
+        date_format = "%Y %b  %d %H:%M:%S"
+        date_time   = "standard"
+        fix_year    = "true"
+        utc_offset  = "false"
+        sourcetype  = "linux:messages"
+        source      = "/var/log/messages"
+        index       = var.index
+        host_pos    = 3
+      },
+      {
+        name        = "linux_messages"
         streamname  = "${var.name}.denodo_linux_messages_cloudwatchlogs"
         date_regex  = "(\\w{3}\\s{1,2}\\d+ \\d{2}:\\d{2}:\\d{2})"
         date_format = "%Y %b  %d %H:%M:%S"
@@ -74,6 +87,19 @@ locals {
         utc_offset  = "false"
         sourcetype  = "linux:messages"
         source      = "/var/log/messages"
+        index       = var.index
+        host_pos    = 3
+      },
+      {
+        name        = "linux_secure"
+        streamname  = "${var.name}.linux_secure_cloudwatchlogs"
+        date_regex  = "(\\w{3}\\s{1,2}\\d+ \\d{2}:\\d{2}:\\d{2})"
+        date_format = "%Y %b  %d %H:%M:%S"
+        date_time   = "standard"
+        fix_year    = "true"
+        utc_offset  = "true"
+        sourcetype  = "linux:secure"
+        source      = "/var/log/secure"
         index       = var.index
         host_pos    = 3
       },
@@ -118,4 +144,3 @@ locals {
     ]
   }
 }
-
