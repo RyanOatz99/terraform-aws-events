@@ -39,6 +39,7 @@ def transformLogEvent(log_event, source, owner, config, streamName):
                 x = event.split()
                 host_pos = int(pattern['host_pos'])
                 host = x[host_pos]
+                host = host.lstrip('node=')
                 print("Found Host: ", host)
 
                 if pattern['date_time'] == 'standard':
