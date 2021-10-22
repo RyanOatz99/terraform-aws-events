@@ -1,4 +1,5 @@
 resource "aws_kinesis_firehose_delivery_stream" "cloudwatch_events" {
+  count       = var.cloudwatch_events_rules == "true" ? 1 : 0
   name        = "${var.name}.events"
   destination = "splunk"
 
@@ -9,8 +10,8 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudwatch_events" {
 
     cloudwatch_logging_options {
       enabled         = true
-      log_group_name  = aws_cloudwatch_log_group.cloudwatch_events_firehose.name
-      log_stream_name = aws_cloudwatch_log_stream.cloudwatch_events_firehose.name
+      log_group_name  = aws_cloudwatch_log_group.cloudwatch_events_firehose[0].name
+      log_stream_name = aws_cloudwatch_log_stream.cloudwatch_events_firehose[0].name
     }
   }
 
@@ -29,7 +30,7 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudwatch_events" {
 
         parameters {
           parameter_name  = "LambdaArn"
-          parameter_value = "${aws_lambda_function.cloudwatch_events_processor.arn}:$LATEST"
+          parameter_value = "${aws_lambda_function.cloudwatch_events_processor[0].arn}:$LATEST"
         }
 
         parameters {
@@ -43,15 +44,18 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudwatch_events" {
 }
 
 resource "aws_cloudwatch_log_group" "cloudwatch_events_firehose" {
-  name = "/pm/aws/cloudwatch/"
+  count = var.cloudwatch_events_rules == "true" ? 1 : 0
+  name  = "/pm/aws/cloudwatch/"
 }
 
 resource "aws_cloudwatch_log_stream" "cloudwatch_events_firehose" {
-  log_group_name = aws_cloudwatch_log_group.cloudwatch_events_firehose.name
+  count          = var.cloudwatch_events_rules == "true" ? 1 : 0
+  log_group_name = aws_cloudwatch_log_group.cloudwatch_events_firehose[0].name
   name           = var.name
 }
 
 resource "aws_kinesis_firehose_delivery_stream" "cloudtrail_events_firehose" {
+  count       = var.cloudtrail_rules == "true" ? 1 : 0
   name        = "${var.name}.cloudtrail"
   destination = "splunk"
 
@@ -62,8 +66,8 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudtrail_events_firehose" {
 
     cloudwatch_logging_options {
       enabled         = true
-      log_group_name  = aws_cloudwatch_log_group.cloudtrail_events_firehose.name
-      log_stream_name = aws_cloudwatch_log_stream.cloudtrail_events_firehose.name
+      log_group_name  = aws_cloudwatch_log_group.cloudtrail_events_firehose[0].name
+      log_stream_name = aws_cloudwatch_log_stream.cloudtrail_events_firehose[0].name
     }
   }
 
@@ -82,7 +86,7 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudtrail_events_firehose" {
 
         parameters {
           parameter_name  = "LambdaArn"
-          parameter_value = "${aws_lambda_function.cloudtrail_events_processor.arn}:$LATEST"
+          parameter_value = "${aws_lambda_function.cloudtrail_events_processor[0].arn}:$LATEST"
         }
 
         parameters {
@@ -96,15 +100,18 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudtrail_events_firehose" {
 }
 
 resource "aws_cloudwatch_log_group" "cloudtrail_events_firehose" {
-  name = "/pm/aws/cloudtrail/"
+  count = var.cloudtrail_rules == "true" ? 1 : 0
+  name  = "/pm/aws/cloudtrail/"
 }
 
 resource "aws_cloudwatch_log_stream" "cloudtrail_events_firehose" {
-  log_group_name = aws_cloudwatch_log_group.cloudtrail_events_firehose.name
+  count          = var.cloudtrail_rules == "true" ? 1 : 0
+  log_group_name = aws_cloudwatch_log_group.cloudtrail_events_firehose[0].name
   name           = var.name
 }
 
 resource "aws_kinesis_firehose_delivery_stream" "guardduty_events_firehose" {
+  count       = var.guardduty_rules == "true" ? 1 : 0
   name        = "${var.name}.guardduty"
   destination = "splunk"
 
@@ -115,8 +122,8 @@ resource "aws_kinesis_firehose_delivery_stream" "guardduty_events_firehose" {
 
     cloudwatch_logging_options {
       enabled         = true
-      log_group_name  = aws_cloudwatch_log_group.guardduty_events_firehose.name
-      log_stream_name = aws_cloudwatch_log_stream.guardduty_events_firehose.name
+      log_group_name  = aws_cloudwatch_log_group.guardduty_events_firehose[0].name
+      log_stream_name = aws_cloudwatch_log_stream.guardduty_events_firehose[0].name
     }
   }
 
@@ -135,7 +142,7 @@ resource "aws_kinesis_firehose_delivery_stream" "guardduty_events_firehose" {
 
         parameters {
           parameter_name  = "LambdaArn"
-          parameter_value = "${aws_lambda_function.guardduty_events_processor.arn}:$LATEST"
+          parameter_value = "${aws_lambda_function.guardduty_events_processor[0].arn}:$LATEST"
         }
 
         parameters {
@@ -149,15 +156,18 @@ resource "aws_kinesis_firehose_delivery_stream" "guardduty_events_firehose" {
 }
 
 resource "aws_cloudwatch_log_group" "guardduty_events_firehose" {
-  name = "/pm/aws/guardduty/"
+  count = var.guardduty_rules == "true" ? 1 : 0
+  name  = "/pm/aws/guardduty/"
 }
 
 resource "aws_cloudwatch_log_stream" "guardduty_events_firehose" {
-  log_group_name = aws_cloudwatch_log_group.guardduty_events_firehose.name
+  count          = var.guardduty_rules == "true" ? 1 : 0
+  log_group_name = aws_cloudwatch_log_group.guardduty_events_firehose[0].name
   name           = var.name
 }
 
 resource "aws_kinesis_firehose_delivery_stream" "securityhub_events_firehose" {
+  count       = var.securityhub_rules == "true" ? 1 : 0
   name        = "${var.name}.securityhub"
   destination = "splunk"
 
@@ -168,8 +178,8 @@ resource "aws_kinesis_firehose_delivery_stream" "securityhub_events_firehose" {
 
     cloudwatch_logging_options {
       enabled         = true
-      log_group_name  = aws_cloudwatch_log_group.securityhub_events_firehose.name
-      log_stream_name = aws_cloudwatch_log_stream.securityhub_events_firehose.name
+      log_group_name  = aws_cloudwatch_log_group.securityhub_events_firehose[0].name
+      log_stream_name = aws_cloudwatch_log_stream.securityhub_events_firehose[0].name
     }
   }
 
@@ -188,7 +198,7 @@ resource "aws_kinesis_firehose_delivery_stream" "securityhub_events_firehose" {
 
         parameters {
           parameter_name  = "LambdaArn"
-          parameter_value = "${aws_lambda_function.securityhub_events_processor.arn}:$LATEST"
+          parameter_value = "${aws_lambda_function.securityhub_events_processor[0].arn}:$LATEST"
         }
 
         parameters {
@@ -202,11 +212,13 @@ resource "aws_kinesis_firehose_delivery_stream" "securityhub_events_firehose" {
 }
 
 resource "aws_cloudwatch_log_group" "securityhub_events_firehose" {
-  name = "/pm/aws/securityhub/"
+  count = var.securityhub_rules == "true" ? 1 : 0
+  name  = "/pm/aws/securityhub/"
 }
 
 resource "aws_cloudwatch_log_stream" "securityhub_events_firehose" {
-  log_group_name = aws_cloudwatch_log_group.securityhub_events_firehose.name
+  count          = var.securityhub_rules == "true" ? 1 : 0
+  log_group_name = aws_cloudwatch_log_group.securityhub_events_firehose[0].name
   name           = var.name
 }
 

@@ -34,6 +34,18 @@ variable "cloudtrail_rules" {
   type        = string
 }
 
+variable "cloudwatch_events_rules" {
+  description = "True if the CW Scheduled Events Rules should be enabled."
+  default     = "false"
+  type        = string
+}
+
+variable "default_processing_lamba" {
+  description = "True if the default Lambda Rules should be enabled."
+  default     = "false"
+  type        = string
+}
+
 variable "autoscaling_rules" {
   description = "True if the AutoScaling CW Rules should be enabled."
   default     = "false"
