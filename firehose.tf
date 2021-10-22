@@ -1,5 +1,5 @@
 resource "aws_kinesis_firehose_delivery_stream" "cloudwatch_events" {
-  count          = var.cloudwatch_events_rules == "true" ? 1 : 0
+  count       = var.cloudwatch_events_rules == "true" ? 1 : 0
   name        = "${var.name}.events"
   destination = "splunk"
 
@@ -44,8 +44,8 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudwatch_events" {
 }
 
 resource "aws_cloudwatch_log_group" "cloudwatch_events_firehose" {
-  count          = var.cloudwatch_events_rules == "true" ? 1 : 0
-  name = "/pm/aws/cloudwatch/"
+  count = var.cloudwatch_events_rules == "true" ? 1 : 0
+  name  = "/pm/aws/cloudwatch/"
 }
 
 resource "aws_cloudwatch_log_stream" "cloudwatch_events_firehose" {
@@ -55,7 +55,7 @@ resource "aws_cloudwatch_log_stream" "cloudwatch_events_firehose" {
 }
 
 resource "aws_kinesis_firehose_delivery_stream" "cloudtrail_events_firehose" {
-  count          = var.cloudtrail_rules == "true" ? 1 : 0
+  count       = var.cloudtrail_rules == "true" ? 1 : 0
   name        = "${var.name}.cloudtrail"
   destination = "splunk"
 
@@ -100,8 +100,8 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudtrail_events_firehose" {
 }
 
 resource "aws_cloudwatch_log_group" "cloudtrail_events_firehose" {
-  count          = var.cloudtrail_rules == "true" ? 1 : 0
-  name = "/pm/aws/cloudtrail/"
+  count = var.cloudtrail_rules == "true" ? 1 : 0
+  name  = "/pm/aws/cloudtrail/"
 }
 
 resource "aws_cloudwatch_log_stream" "cloudtrail_events_firehose" {
@@ -111,7 +111,7 @@ resource "aws_cloudwatch_log_stream" "cloudtrail_events_firehose" {
 }
 
 resource "aws_kinesis_firehose_delivery_stream" "guardduty_events_firehose" {
-  count          = var.guardduty_rules == "true" ? 1 : 0
+  count       = var.guardduty_rules == "true" ? 1 : 0
   name        = "${var.name}.guardduty"
   destination = "splunk"
 
@@ -156,8 +156,8 @@ resource "aws_kinesis_firehose_delivery_stream" "guardduty_events_firehose" {
 }
 
 resource "aws_cloudwatch_log_group" "guardduty_events_firehose" {
-  count          = var.guardduty_rules == "true" ? 1 : 0
-  name = "/pm/aws/guardduty/"
+  count = var.guardduty_rules == "true" ? 1 : 0
+  name  = "/pm/aws/guardduty/"
 }
 
 resource "aws_cloudwatch_log_stream" "guardduty_events_firehose" {
@@ -167,7 +167,7 @@ resource "aws_cloudwatch_log_stream" "guardduty_events_firehose" {
 }
 
 resource "aws_kinesis_firehose_delivery_stream" "securityhub_events_firehose" {
-  count          = var.securityhub_rules == "true" ? 1 : 0
+  count       = var.securityhub_rules == "true" ? 1 : 0
   name        = "${var.name}.securityhub"
   destination = "splunk"
 
@@ -212,8 +212,8 @@ resource "aws_kinesis_firehose_delivery_stream" "securityhub_events_firehose" {
 }
 
 resource "aws_cloudwatch_log_group" "securityhub_events_firehose" {
-  count          = var.securityhub_rules == "true" ? 1 : 0
-  name = "/pm/aws/securityhub/"
+  count = var.securityhub_rules == "true" ? 1 : 0
+  name  = "/pm/aws/securityhub/"
 }
 
 resource "aws_cloudwatch_log_stream" "securityhub_events_firehose" {
