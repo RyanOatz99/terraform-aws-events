@@ -1,4 +1,5 @@
 resource "aws_lambda_function" "default_processing_lambda" {
+  count            = var.default_processing_lamba == "true" ? 1 : 0
   filename         = "${path.module}/files/processor.zip"
   function_name    = "${var.name}-default-log-processor"
   role             = aws_iam_role.events_processor.arn
@@ -16,6 +17,7 @@ resource "aws_lambda_function" "default_processing_lambda" {
 
 
 resource "aws_lambda_function" "cloudwatch_events_processor" {
+  count            = var.cloudwatch_events_rules == "true" ? 1 : 0
   filename         = "${path.module}/files/cloudwatch_events_processor.zip"
   function_name    = "${var.name}-CloudWatch-Events-Processor"
   role             = aws_iam_role.events_processor.arn
@@ -43,6 +45,7 @@ resource "aws_lambda_function" "cloudwatchlogs_processor" {
 }
 
 resource "aws_lambda_function" "cloudtrail_events_processor" {
+  count            = var.cloudtrail_rules == "true" ? 1 : 0
   filename         = "${path.module}/files/cloudtrail_events_processor.zip"
   function_name    = "${var.name}-CloudTrail-Events-Processor"
   role             = aws_iam_role.events_processor.arn
@@ -54,6 +57,7 @@ resource "aws_lambda_function" "cloudtrail_events_processor" {
 }
 
 resource "aws_lambda_function" "guardduty_events_processor" {
+  count            = var.guardduty_rules == "true" ? 1 : 0
   filename         = "${path.module}/files/guardduty_events_processor.zip"
   function_name    = "${var.name}-GuardDuty-Events-Processor"
   role             = aws_iam_role.events_processor.arn
@@ -65,6 +69,7 @@ resource "aws_lambda_function" "guardduty_events_processor" {
 }
 
 resource "aws_lambda_function" "securityhub_events_processor" {
+  count            = var.securityhub_rules == "true" ? 1 : 0
   filename         = "${path.module}/files/securityhub_events_processor.zip"
   function_name    = "${var.name}-SecurityHub-Events-Processor"
   role             = aws_iam_role.events_processor.arn

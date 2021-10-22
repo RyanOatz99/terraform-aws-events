@@ -15,6 +15,6 @@ resource "aws_cloudwatch_event_target" "securityhub" {
   count     = var.securityhub_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.securityhub[0].name
   target_id = "SecurityHubToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.securityhub_events_firehose.arn
+  arn       = aws_kinesis_firehose_delivery_stream.securityhub_events_firehose[0].arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
