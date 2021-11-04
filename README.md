@@ -55,22 +55,40 @@ modules_[AWS_ACCOUNT_NAME].tf
     guardduty_hec_token        = var.guardduty_hec_token
     cloudtrail_hec_token       = var.cloudtrail_hec_token
     cloudwatchlogs_hec_token   = var.cloudwatchlogs_hec_token
+    linux_audit_cloudwatchlogs_hec_token    = var.linux_audit_cloudwatchlogs_hec_token
+    linux_syslog_cloudwatchlogs_hec_token   = var.linux_syslog_cloudwatchlogs_hec_token
+    metadataserver_cloudwatchlogs_hec_token = var.metadataserver_cloudwatchlogs_hec_token
+    linux_secure_cloudwatchlogs_hec_token   = var.linux_secure_cloudwatchlogs_hec_token
+    storagegw_cloudwatchlogs_hec_token      = var.storagegw_cloudwatchlogs_hec_token
+    ssm_cloudwatchlogs_hec_token            = var.ssm_cloudwatchlogs_hec_token
+    sasworkspace_cloudwatchlogs_hec_token   = var.sasworkspace_cloudwatchlogs_hec_token
 
     #CloudWatch Log Groups
     cloudwatch_logs_to_ship = []
-    }
 
     #Linux Audit Cloudwatch Log Groups
     linux_audit_cloudwatch_logs_to_ship = []
-    }
 
     #Linux Syslog Cloudwatch Log Groups
     linux_syslog_cloudwatch_logs_to_ship = []
-    }
 
-    #metadataserver Cloudwatch Log Groups
+    #Linux Secure Cloudwatch log Groups
+    linux_secure_cloudwatch_logs_to_ship = []
+
+    #Storage Gateway Cloudwatch Log Group
+    storagegw_cloudwatch_logs_to_ship = []
+
+    #metadataserver Cloudwatch Log Group
     metadataserver_cloudwatch_logs_to_ship = []
-    }
+
+    #sasworkspace Cloudwatch Log Group
+    sasworkspace_cloudwatch_logs_to_ship = []
+
+    #ssm Cloudwatch Log Group
+    ssm_cloudwatch_logs_to_ship = []
+    
+
+   
 
 In addition, usage of the module may require:
 * A custom provider with an alias
@@ -81,85 +99,97 @@ In addition, usage of the module may require:
             profile = "[AWS_CREDENTIALS_PROFILE_NAME]"
         }
   
-* A variables.tf for seeding the module
+  * A variables.tf for seeding the module
   
-        variable "vpcflowlogs_hec_token" {
-            description = "The HEC Token for VPCFlowLogs"
-            default     = "[VPC_FLOW_LOGS_HEC_TOKEN]"
-            type        = string
-        }
+          variable "vpcflowlogs_hec_token" {
+              description = "The HEC Token for VPCFlowLogs"
+              default     = "[VPC_FLOW_LOGS_HEC_TOKEN]"
+              type        = string
+          }
         
-        variable "cloudtrail_hec_token" {
-            description = "The HEC Token for CloudTrail"
-            default     = "[CLOUDTRAIL_HEC_TOKEN]"
-            type        = string
-        }
+          variable "cloudtrail_hec_token" {
+              description = "The HEC Token for CloudTrail"
+              default     = "[CLOUDTRAIL_HEC_TOKEN]"
+              type        = string
+          }
         
-        variable "cloudwatchevents_hec_token" {
-            description = "The HEC Token for CloudWatch Events"
-            default     = "[CLOUDWATCH_EVENTS_HEC_TOKEN]"
-            type        = string
-        }
+          variable "cloudwatchevents_hec_token" {
+              description = "The HEC Token for CloudWatch Events"
+              default     = "[CLOUDWATCH_EVENTS_HEC_TOKEN]"
+              type        = string
+          }
         
-        variable "guardduty_hec_token" {
-            description = "The HEC Token for GuardDuty"
-            default     = "[GUARD_DUTY_HEC_TOKEN]"
-            type        = string
-        }
+          variable "guardduty_hec_token" {
+              description = "The HEC Token for GuardDuty"
+              default     = "[GUARD_DUTY_HEC_TOKEN]"
+              type        = string
+          }
         
-        variable "securityhub_hec_token" {
-            description = "The HEC Token for VPCFlowLogs"
-            default     = "[VPC_FLOWLOGS_HEC_TOKEN]"
-            type        = string
-        }
+          variable "securityhub_hec_token" {
+              description = "The HEC Token for VPCFlowLogs"
+              default     = "[VPC_FLOWLOGS_HEC_TOKEN]"
+              type        = string
+          }
 
-        variable "cloudwatchlogs_hec_token" {
-            description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
-            default     = "[CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
-            type        = string
-        }
+          variable "cloudwatchlogs_hec_token" {
+              description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
+              default     = "[CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
+              type        = string
+          }
 
-        variable "metadataserver_cloudwatchlogs_hec_token" {
-            description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
-            default     = "[METADATASERVER_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
-            type        = string
-        }
+          variable "metadataserver_cloudwatchlogs_hec_token" {
+              description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
+              default     = "[METADATASERVER_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
+              type        = string
+          }
 
-        variable "linux_audit_cloudwatchlogs_hec_token" {
-            description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
-            default     = "[LINUX_AUDIT_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
-            type        = string
-        }
+          variable "linux_audit_cloudwatchlogs_hec_token" {
+              description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
+              default     = "[LINUX_AUDIT_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
+              type        = string
+          }
 
-        variable "linux_syslog_cloudwatchlogs_hec_token" {
-            description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
-            default     = "[LINUX_SYSLOG_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
-            type        = string
-        }
+          variable "linux_syslog_cloudwatchlogs_hec_token" {
+              description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
+              default     = "[LINUX_SYSLOG_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
+              type        = string
+          }
 
-        variable "storagegw_cloudwatchlogs_hec_token" {
-            description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
-            default     = "[STORAGEGW_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
-            type        = string
-        }        
+          variable "storagegw_cloudwatchlogs_hec_token" {
+              description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
+              default     = "[STORAGEGW_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
+              type        = string
+          }  
+          
+          variable "sasworkspace_cloudwatchlogs_hec_token" {
+              description = "sasworkspace CloudWatchLogs HEC Token for use with Splunk Endpoint"
+              default     = "[SASWORKSPACE_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
+              type        = string
+          }  
 
-        variable "linux_secure_cloudwatchlogs_hec_token" {
-            description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
-            default     = "[LINUX_SECURE_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
-            type        = string
-        }        
+          variable "linux_secure_cloudwatchlogs_hec_token" {
+              description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
+              default     = "[LINUX_SECURE_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
+              type        = string
+          }        
 
-        variable "ssm_cloudwatchlogs_hec_token" {
-            description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
-            default     = "[SSM_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
-            type        = string
-        }        
+          variable "ssm_cloudwatchlogs_hec_token" {
+              description = "CloudWatchLogs HEC Token for use with Splunk Endpoint"
+              default     = "[SSM_CLOUDWATCH_LOG_GROUP_HEC_TOKEN]"
+              type        = string
+          }        
+          
+          variable "linux_messages_cloudwatchlogs_hec_token" {
+              description = "Linux Messages CloudWatchLogs HEC Token for use with Splunk Endpoint"
+              default     = "[LINUX_MESSAGES_LOG_GROUP_HEC_TOKEN]"
+              type        = string
+          }     
 
           variable "splunk_endpoint" {
-            description = "The Splunk Endpoint URI"
-            default     = "[SPUNK_ENDPOINT_HTTPS_ADDRESS]"
-            type        = string
-        }
+              description = "The Splunk Endpoint URI"
+              default     = "[SPUNK_ENDPOINT_HTTPS_ADDRESS]"
+              type        = string
+          }
 
 
 
@@ -236,6 +266,18 @@ linux_storagegw_cloudwatchlogs_hec_token
     type        = string
 
 ssm_cloudwatchlogs_hec_token
+-
+    CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
+    default     = ""<br>
+    type        = string
+
+linux_messages_cloudwatchlogs_hec_token
+-
+    CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
+    default     = ""<br>
+    type        = string
+
+sasworkspace_cloudwatchlogs_hec_token
 -
     CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
     default     = ""<br>
@@ -421,6 +463,54 @@ workspaces_rules
     default = "false"<br>
     type = string
 
+linux_audit_cloudwatchlogs_rules
+-
+    True if the resource Rules should be enabled.<br>
+    default = "false"<br>
+    type = string
+
+linux_messages_cloudwatch_logs_rules
+-
+    True if the resource Rules should be enabled.<br>
+    default = "false"<br>
+    type = string
+
+metadataserver_cloudwatchlogs_rules
+-
+    True if the resource Rules should be enabled.<br>
+    default = "false"<br>
+    type = string
+
+storagegw_cloudwatchlogs_rules
+-
+    True if the resource Rules should be enabled.<br>
+    default = "false"<br>
+    type = string
+
+linux_secure_cloudwatchlogs_rules
+-
+    True if the resource Rules should be enabled.<br>
+    default = "false"<br>
+    type = string
+
+ssm_cloudwatchlogs_rules
+-
+    True if the resource Rules should be enabled.<br>
+    default = "false"<br>
+    type = string
+
+sasworkspace_cloudwatchlogs_rules
+-
+    True if the resource Rules should be enabled.<br>
+    default = "false"<br>
+    type = string
+
+cloudwatchlogs_rules
+-
+    True if the resource Rules should be enabled.<br>
+    default = "false"<br>
+    type = string
+
 CloudWatch Log Group Variables
 -
     variable "cloudwatch_logs_to_ship" {
@@ -552,6 +642,22 @@ CloudWatch Storage Gateway Log Group Variables
     type = list(string)
     }
 
+    variable "subscription_filter_pattern" {
+    description = "Filter pattern for the CloudWatch Log Group subscription to the Kinesis Firehose. See [this](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html) for filter pattern info."
+    default     = "" # nothing is being filtered
+    }
+
+    variable "cloudwatch_log_filter_name" {
+    description = "Name of Log Filter for CloudWatch Log subscription to Kinesis Firehose"
+    default     = "KinesisSubscriptionFilter"
+    }
+
+    variable "log_stream_name" {
+    description = "Name of the CloudWatch log stream for Kinesis Firehose CloudWatch log group"
+    default     = "SplunkDelivery"
+    }
+
+
 CloudWatch linux secure Log Group Variables
 -
     variable "linux_secure_cloudwatch_logs_to_ship" {
@@ -560,6 +666,22 @@ CloudWatch linux secure Log Group Variables
     type = list(string)
     }
 
+    variable "subscription_filter_pattern" {
+    description = "Filter pattern for the CloudWatch Log Group subscription to the Kinesis Firehose. See [this](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html) for filter pattern info."
+    default     = "" # nothing is being filtered
+    }
+
+    variable "cloudwatch_log_filter_name" {
+    description = "Name of Log Filter for CloudWatch Log subscription to Kinesis Firehose"
+    default     = "KinesisSubscriptionFilter"
+    }
+
+    variable "log_stream_name" {
+    description = "Name of the CloudWatch log stream for Kinesis Firehose CloudWatch log group"
+    default     = "SplunkDelivery"
+    }
+
+
 CloudWatch SSM Log Group Variables
 -
     variable "ssm_cloudwatch_logs_to_ship" {
@@ -567,3 +689,42 @@ CloudWatch SSM Log Group Variables
     default = ["",""]
     type = list(string)
     }
+
+    variable "subscription_filter_pattern" {
+    description = "Filter pattern for the CloudWatch Log Group subscription to the Kinesis Firehose. See [this](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html) for filter pattern info."
+    default     = "" # nothing is being filtered
+    }
+
+    variable "cloudwatch_log_filter_name" {
+    description = "Name of Log Filter for CloudWatch Log subscription to Kinesis Firehose"
+    default     = "KinesisSubscriptionFilter"
+    }
+
+    variable "log_stream_name" {
+    description = "Name of the CloudWatch log stream for Kinesis Firehose CloudWatch log group"
+    default     = "SplunkDelivery"
+    }
+
+CloudWatch Linux Messages Log Group Variables
+-
+    variable "linux_messages_cloudwatch_logs_to_ship" {
+    description = "linux messages CloudWatch Log Groups"
+    default     = []
+    type        = list(string)
+    }
+  
+    variable "subscription_filter_pattern" {
+    description = "Filter pattern for the CloudWatch Log Group subscription to the Kinesis Firehose. See [this](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html) for filter pattern info."
+    default     = "" # nothing is being filtered
+    }
+
+    variable "cloudwatch_log_filter_name" {
+    description = "Name of Log Filter for CloudWatch Log subscription to Kinesis Firehose"
+    default     = "KinesisSubscriptionFilter"
+    }
+
+    variable "log_stream_name" {
+    description = "Name of the CloudWatch log stream for Kinesis Firehose CloudWatch log group"
+    default     = "SplunkDelivery"
+    }
+
