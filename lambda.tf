@@ -23,12 +23,12 @@ data "template_file" "lambda_zip" {
 }
 
 resource "local_file" "lambda_py" {
-  content = data.template_file.lambda_zip.rendered
+  content  = data.template_file.lambda_zip.rendered
   filename = "${path.module}/files/processor.py"
 }
 
 data "archive_file" "lambda_zip" {
-  type = "zip"
+  type        = "zip"
   output_path = "${path.module}/files/processor.zip"
   source_file = "${path.module}/files/processor.py"
 
