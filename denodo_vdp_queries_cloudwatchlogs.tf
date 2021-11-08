@@ -71,7 +71,7 @@ resource "aws_lambda_function" "denodo_vdp_queries_cloudwatch_logs_processor" {
   function_name    = "${var.name}-denodo-vdp-queries-CloudWatchlogs-Processor"
   role             = aws_iam_role.events_processor.arn
   handler          = "processor.handler"
-  source_code_hash = filebase64sha256("${path.module}/files/processor.zip")
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
