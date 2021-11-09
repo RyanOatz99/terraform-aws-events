@@ -1,5 +1,5 @@
 resource "aws_ssm_parameter" "processing_lambda_config" {
-  name        = "/pm/processor/config"
+  name        = "/pm/processor/config-${var.name}"
   description = "Config object for the Protective Monitoring Processor"
   type        = "SecureString"
   value       = jsonencode(local.processing_lambda_config)

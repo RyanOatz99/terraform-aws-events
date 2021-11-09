@@ -4,7 +4,7 @@ resource "aws_lambda_function" "default_processing_lambda" {
   function_name    = "${var.name}-default-log-processor"
   role             = aws_iam_role.events_processor.arn
   handler          = "processor.handler"
-  source_code_hash = filebase64sha256("${path.module}/files/processor.zip")
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
@@ -15,6 +15,27 @@ resource "aws_lambda_function" "default_processing_lambda" {
   }
 }
 
+data "template_file" "lambda_zip" {
+  template = file("${path.module}/files/processor.py.tpl")
+  vars = {
+    module_name = var.name
+  }
+}
+
+resource "local_file" "lambda_py" {
+  content  = data.template_file.lambda_zip.rendered
+  filename = "${path.module}/files/processor.py"
+}
+
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  output_path = "${path.module}/files/processor.zip"
+  source_file = "${path.module}/files/processor.py"
+
+  depends_on = [
+    local_file.lambda_py
+  ]
+}
 
 resource "aws_lambda_function" "cloudwatch_events_processor" {
   count            = var.cloudwatch_events_rules == "true" ? 1 : 0
@@ -29,11 +50,11 @@ resource "aws_lambda_function" "cloudwatch_events_processor" {
 }
 resource "aws_lambda_function" "cloudwatchlogs_processor" {
   count            = var.cloudwatchlogs_rules == "true" ? 1 : 0
-  filename         = "${path.module}/files/cloudwatchlogs_processor.zip"
+  filename         = "${path.module}/files/processor.zip"
   function_name    = "${var.name}-CloudWatchlogs-Processor"
   role             = aws_iam_role.events_processor.arn
-  handler          = "cloudwatchlogs_processor.handler"
-  source_code_hash = filebase64sha256("${path.module}/files/cloudwatchlogs_processor.zip")
+  handler          = "processor.handler"
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
@@ -98,7 +119,7 @@ resource "aws_lambda_function" "linux_audit_cloudwatchlogs_processor" {
   function_name    = "${var.name}-linux-audit-CloudWatchlogs-Processor"
   role             = aws_iam_role.events_processor.arn
   handler          = "processor.handler"
-  source_code_hash = filebase64sha256("${path.module}/files/processor.zip")
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
@@ -115,7 +136,7 @@ resource "aws_lambda_function" "linux_syslog_cloudwatchlogs_processor" {
   function_name    = "${var.name}-linux-syslog-CloudWatchlogs-Processor"
   role             = aws_iam_role.events_processor.arn
   handler          = "processor.handler"
-  source_code_hash = filebase64sha256("${path.module}/files/processor.zip")
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
@@ -166,7 +187,7 @@ resource "aws_lambda_function" "linux_secure_cloudwatchlogs_processor" {
   function_name    = "${var.name}-linux_secure-CloudWatchlogs-Processor"
   role             = aws_iam_role.events_processor.arn
   handler          = "processor.handler"
-  source_code_hash = filebase64sha256("${path.module}/files/processor.zip")
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512

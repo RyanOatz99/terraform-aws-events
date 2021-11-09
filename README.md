@@ -12,9 +12,11 @@ modules_[AWS_ACCOUNT_NAME].tf
         providers = {
         aws = aws.[CUSTOM_PROVIDER_ALIAS]
     }
-    source = "./events/"
-    name   = "[AWS_ACCOUNT_NAME]-events"
-    
+    source  = "./events/"
+    version = "revision number"
+    name    = "[AWS_ACCOUNT_NAME]-events"
+    index   = "Splunk index name"
+
     # Enable whole-service Rules
     securityhub_rules = "true"
     guardduty_rules   = "true"
