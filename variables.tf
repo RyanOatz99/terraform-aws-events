@@ -563,3 +563,27 @@ variable "linux_messages_cloudwatch_logs_to_ship" {
   default     = []
   type        = list(string)
 }
+
+variable "csat_cloudwatch_logs_to_ship" {
+  description = "CSAT CloudWatch Log Groups"
+  default     = []
+  type        = list(string)
+}
+
+variable "csat_cloudwatch_logs_rules" {
+  description = "CSAT CloudWatch Log used"
+  default     = "false"
+  type        = string
+}
+
+variable "csat_cloudwatch_logs_hec_token" {
+  description = "CSAT CloudWatch Log HEC Token"
+  default     = ""
+  type        = string
+}
+
+variable "csat_subscription_filter_pattern" {
+  description = "Filter pattern for the CSAT CloudWatch Log Group subscription to the Kinesis Firehose. See [this](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html) for filter pattern info."
+  default     = "" # nothing is being filtered
+}
+
