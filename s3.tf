@@ -5,7 +5,7 @@ resource "aws_s3_bucket" "events_firehose_backups" {
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
-        kms_master_key_id = aws_kms_key.events_firehose_backups.arn
+        kms_master_key_id = aws_kms_key.events_firehose_backups.id
         sse_algorithm     = "aws:kms"
       }
     }
@@ -20,10 +20,10 @@ resource "aws_s3_bucket_public_access_block" "events_firehose_backups" {
   restrict_public_buckets = true
 }
 
-//resource "aws_kms_key" "events_firehose_backups" {
-//  description             = "This key is used to encrypt bucket objects in the ons-cia-${var.name}-firehose-backups bucket"
-//  deletion_window_in_days = 14
-//  enable_key_rotation     = true
-//  is_enabled              = true
-//  policy                  = data.aws_iam_policy_document.s3_bucket_cmk.json
-//}
+resource "aws_kms_key" "events_firehose_backups" {
+  description             = "This key is used to encrypt bucket objects in the ons-cia-${var.name}-firehose-backups bucket"
+  deletion_window_in_days = 14
+  enable_key_rotation     = true
+  is_enabled              = true
+  policy                  = data.aws_iam_policy_document.s3_bucket_cmk.json
+}
