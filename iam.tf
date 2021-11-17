@@ -241,9 +241,9 @@ data "aws_iam_policy_document" "firehose_backup_s3_access" {
     ]
     effect    = "Allow"
     resources = [aws_kms_key.events_firehose_backups.id]
-    }
-  
-    statement {
+  }
+
+  statement {
     sid = ""
     actions = [
       "kms:Decrypt"
@@ -554,9 +554,9 @@ resource "aws_iam_role_policy_attachment" "firehose_lambda_execution" {
 
 data "aws_iam_policy_document" "s3_bucket_cmk" {
   statement {
-    sid       = "EnableIAMPermissionsFireHose"
-    effect    = "Allow"
-    actions   = [
+    sid    = "EnableIAMPermissionsFireHose"
+    effect = "Allow"
+    actions = [
       "kms:Encrypt",
       "kms:ListKeys",
       "kms:DescribeKeys",
@@ -577,9 +577,9 @@ data "aws_iam_policy_document" "s3_bucket_cmk" {
 
     principals {
       identifiers = ["arn:aws:iam::${local.account}:user/ci",
-                     "arn:aws:iam::${local.account}:role/ci",
-                     "arn:aws:iam::${local.account}:role/administrator"]
-      type        = "AWS"
+        "arn:aws:iam::${local.account}:role/ci",
+      "arn:aws:iam::${local.account}:role/administrator"]
+      type = "AWS"
     }
   }
 }
