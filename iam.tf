@@ -229,17 +229,17 @@ data "aws_iam_policy_document" "firehose_backup_s3_access" {
       variable = "kms:EncryptionContext:aws:kinesis:arn"
     }
   }
-  statement {
-    sid = "AllowKMSEncryptionForFirehoseS3Buckets"
-    actions = [
-      "kms:Encrypt",
-      "kms:ListKeys",
-      "kms:DescribeKeys",
-      "kms:ReEncrypt"
-    ]
-    effect    = "Allow"
-    resources = [aws_kms_key.events_firehose_backups.id]
-  }
+  #  statement {
+  #    sid = "AllowKMSEncryptionForFirehoseS3Buckets"
+  #    actions = [
+  #      "kms:Encrypt",
+  #      "kms:ListKeys",
+  #      "kms:DescribeKeys",
+  #      "kms:ReEncrypt"
+  #    ]
+  #    effect    = "Allow"
+  #    resources = [aws_kms_key.events_firehose_backups.id]
+  #  }
 
   statement {
     sid = ""
@@ -546,37 +546,37 @@ resource "aws_iam_role_policy_attachment" "firehose_lambda_execution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-data "aws_iam_policy_document" "s3_bucket_cmk" {
-  statement {
-    sid    = "EnableIAMPermissionsFireHose"
-    effect = "Allow"
-    actions = [
-      "kms:Encrypt",
-      "kms:ListKeys",
-      "kms:DescribeKeys",
-      "kms:ReEncrypt"
-    ]
-    resources = ["*"]
-
-    principals {
-      identifiers = [aws_iam_role.firehose_backup_s3.arn]
-      type        = "AWS"
-    }
-  }
-  statement {
-    sid       = "EnableIAMPermissionsCIUser"
-    effect    = "Allow"
-    actions   = ["kms:*"]
-    resources = ["*"]
-
-    principals {
-      identifiers = ["arn:aws:iam::${local.account}:user/ci",
-        "arn:aws:iam::${local.account}:role/ci",
-      "arn:aws:iam::${local.account}:role/administrator"]
-      type = "AWS"
-    }
-  }
-}
+#data "aws_iam_policy_document" "s3_bucket_cmk" {
+#  statement {
+#    sid    = "EnableIAMPermissionsFireHose"
+#    effect = "Allow"
+#    actions = [
+#      "kms:Encrypt",
+#      "kms:ListKeys",
+#      "kms:DescribeKeys",
+#      "kms:ReEncrypt"
+#    ]
+#    resources = ["*"]
+#
+#    principals {
+#      identifiers = [aws_iam_role.firehose_backup_s3.arn]
+#      type        = "AWS"
+#    }
+#  }
+#  statement {
+#    sid       = "EnableIAMPermissionsCIUser"
+#    effect    = "Allow"
+#    actions   = ["kms:*"]
+#    resources = ["*"]
+#
+#    principals {
+#      identifiers = ["arn:aws:iam::${local.account}:user/ci",
+#        "arn:aws:iam::${local.account}:role/ci",
+#      "arn:aws:iam::${local.account}:role/administrator"]
+#      type = "AWS"
+#    }
+#  }
+#}
 
 resource "aws_iam_role" "cloudwatch_to_firehose_trust" {
   count       = var.cloudwatchlogs_rules == "true" ? 1 : 0
