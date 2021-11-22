@@ -229,17 +229,17 @@ data "aws_iam_policy_document" "firehose_backup_s3_access" {
       variable = "kms:EncryptionContext:aws:kinesis:arn"
     }
   }
-#  statement {
-#    sid = "AllowKMSEncryptionForFirehoseS3Buckets"
-#    actions = [
-#      "kms:Encrypt",
-#      "kms:ListKeys",
-#      "kms:DescribeKeys",
-#      "kms:ReEncrypt"
-#    ]
-#    effect    = "Allow"
-#    resources = [aws_kms_key.events_firehose_backups.id]
-#  }
+  #  statement {
+  #    sid = "AllowKMSEncryptionForFirehoseS3Buckets"
+  #    actions = [
+  #      "kms:Encrypt",
+  #      "kms:ListKeys",
+  #      "kms:DescribeKeys",
+  #      "kms:ReEncrypt"
+  #    ]
+  #    effect    = "Allow"
+  #    resources = [aws_kms_key.events_firehose_backups.id]
+  #  }
 
   statement {
     sid = ""
