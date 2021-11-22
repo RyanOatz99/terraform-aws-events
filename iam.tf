@@ -66,6 +66,13 @@ data "aws_iam_policy_document" "firehose_backup_s3_access" {
     resources = ["*"]
   }
 
+  statement {
+    sid       = "AllowKinesisDeliveryStreamAccessCWE"
+    actions   = ["*"]
+    effect    = "Allow"
+    resources = [aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn]
+  }
+
   dynamic "statement" {
     for_each = aws_kinesis_firehose_delivery_stream.securityhub_events_firehose
 
@@ -96,16 +103,7 @@ data "aws_iam_policy_document" "firehose_backup_s3_access" {
       resources = [aws_kinesis_firehose_delivery_stream.cloudtrail_events_firehose[0].arn]
     }
   }
-  dynamic "statement" {
-    for_each = aws_kinesis_firehose_delivery_stream.cloudwatch_events
 
-    content {
-      sid       = "AllowKinesisDeliveryStreamAccessCWELogs"
-      actions   = ["*"]
-      effect    = "Allow"
-      resources = [aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn]
-    }
-  }
   dynamic "statement" {
     for_each = aws_kinesis_firehose_delivery_stream.cloudwatchlogs_firehose
 
@@ -296,19 +294,15 @@ data "aws_iam_policy_document" "firehose_delivery_assume" {
 
 data "aws_iam_policy_document" "firehose_delivery_access" {
 
-  dynamic "statement" {
-    for_each = aws_kinesis_firehose_delivery_stream.cloudwatch_events
-
-    content {
-      actions = [
-        "firehose:PutRecord",
-        "firehose:PutRecordBatch"
-      ]
-      sid       = "AllowKinesisDeliveryStreamAccessCWEFlowLogs"
-      effect    = "Allow"
-      resources = [aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn]
-    }
+  statement {
+    sid = "AllowKinesisDeliveryStreamAccessCWE"
+    actions = [
+      "firehose:PutRecord",
+    "firehose:PutRecordBatch"]
+    effect    = "Allow"
+    resources = [aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn]
   }
+
   dynamic "statement" {
     for_each = aws_kinesis_firehose_delivery_stream.cloudtrail_events_firehose
 
