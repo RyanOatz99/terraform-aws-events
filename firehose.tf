@@ -1,5 +1,4 @@
 resource "aws_kinesis_firehose_delivery_stream" "cloudwatch_events" {
-  count       = var.cloudwatch_events_rules == "true" ? 1 : 0
   name        = "${var.name}.events"
   destination = "splunk"
 
@@ -10,8 +9,8 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudwatch_events" {
 
     cloudwatch_logging_options {
       enabled         = true
-      log_group_name  = aws_cloudwatch_log_group.cloudwatch_events_firehose[0].name
-      log_stream_name = aws_cloudwatch_log_stream.cloudwatch_events_firehose[0].name
+      log_group_name  = aws_cloudwatch_log_group.cloudwatch_events_firehose.name
+      log_stream_name = aws_cloudwatch_log_stream.cloudwatch_events_firehose.name
     }
   }
 
@@ -30,7 +29,7 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudwatch_events" {
 
         parameters {
           parameter_name  = "LambdaArn"
-          parameter_value = "${aws_lambda_function.cloudwatch_events_processor[0].arn}:$LATEST"
+          parameter_value = "${aws_lambda_function.cloudwatch_events_processor.arn}:$LATEST"
         }
 
         parameters {
@@ -44,13 +43,11 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudwatch_events" {
 }
 
 resource "aws_cloudwatch_log_group" "cloudwatch_events_firehose" {
-  count = var.cloudwatch_events_rules == "true" ? 1 : 0
-  name  = "/pm/aws/cloudwatch/"
+  name = "/pm/aws/cloudwatch/${var.name}"
 }
 
 resource "aws_cloudwatch_log_stream" "cloudwatch_events_firehose" {
-  count          = var.cloudwatch_events_rules == "true" ? 1 : 0
-  log_group_name = aws_cloudwatch_log_group.cloudwatch_events_firehose[0].name
+  log_group_name = aws_cloudwatch_log_group.cloudwatch_events_firehose.name
   name           = var.name
 }
 
