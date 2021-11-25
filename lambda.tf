@@ -38,7 +38,6 @@ data "archive_file" "lambda_zip" {
 }
 
 resource "aws_lambda_function" "cloudwatch_events_processor" {
-  count            = var.cloudwatch_events_rules == "true" ? 1 : 0
   filename         = "${path.module}/files/cloudwatch_events_processor.zip"
   function_name    = "${var.name}-CloudWatch-Events-Processor"
   role             = aws_iam_role.events_processor.arn

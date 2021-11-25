@@ -130,6 +130,19 @@ locals {
         host_pos    = 3
       },
       {
+        name        = "csat"
+        streamname  = "${var.name}.csat_cloudwatchlogs"
+        date_regex  = "(\\d{2}\\/\\d{2}\\/\\d{4} \\d{2}:\\d{2}:\\d{2})"
+        date_format = "%d/%m/%Y %H:%M:%S"
+        date_time   = "standard"
+        fix_year    = ""
+        utc_offset  = "false"
+        sourcetype  = "cis:csat"
+        source      = "/opt/CSAT_Pro/logs/csatlogs/csat.log"
+        index       = var.index
+        host_pos    = 0
+      },
+      {
         name        = "test_event"
         streamname  = "copy-cwl-lambda-invoke-input-151025436553-Firehose-8KILJ01Q5OBN"
         date_regex  = "(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3})"

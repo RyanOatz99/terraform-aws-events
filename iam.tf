@@ -66,6 +66,13 @@ data "aws_iam_policy_document" "firehose_backup_s3_access" {
     resources = ["*"]
   }
 
+  statement {
+    sid       = "AllowKinesisDeliveryStreamAccessCWE"
+    actions   = ["*"]
+    effect    = "Allow"
+    resources = [aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn]
+  }
+
   dynamic "statement" {
     for_each = aws_kinesis_firehose_delivery_stream.securityhub_events_firehose
 
@@ -96,16 +103,7 @@ data "aws_iam_policy_document" "firehose_backup_s3_access" {
       resources = [aws_kinesis_firehose_delivery_stream.cloudtrail_events_firehose[0].arn]
     }
   }
-  dynamic "statement" {
-    for_each = aws_kinesis_firehose_delivery_stream.cloudwatch_events
 
-    content {
-      sid       = "AllowKinesisDeliveryStreamAccessCWELogs"
-      actions   = ["*"]
-      effect    = "Allow"
-      resources = [aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn]
-    }
-  }
   dynamic "statement" {
     for_each = aws_kinesis_firehose_delivery_stream.cloudwatchlogs_firehose
 
@@ -231,6 +229,18 @@ data "aws_iam_policy_document" "firehose_backup_s3_access" {
       variable = "kms:EncryptionContext:aws:kinesis:arn"
     }
   }
+  #  statement {
+  #    sid = "AllowKMSEncryptionForFirehoseS3Buckets"
+  #    actions = [
+  #      "kms:Encrypt",
+  #      "kms:ListKeys",
+  #      "kms:DescribeKeys",
+  #      "kms:ReEncrypt"
+  #    ]
+  #    effect    = "Allow"
+  #    resources = [aws_kms_key.events_firehose_backups.id]
+  #  }
+
   statement {
     sid = "AllowKMSEncryptionForFirehoseS3Buckets"
     actions = [
@@ -296,19 +306,15 @@ data "aws_iam_policy_document" "firehose_delivery_assume" {
 
 data "aws_iam_policy_document" "firehose_delivery_access" {
 
-  dynamic "statement" {
-    for_each = aws_kinesis_firehose_delivery_stream.cloudwatch_events
-
-    content {
-      actions = [
-        "firehose:PutRecord",
-        "firehose:PutRecordBatch"
-      ]
-      sid       = "AllowKinesisDeliveryStreamAccessCWEFlowLogs"
-      effect    = "Allow"
-      resources = [aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn]
-    }
+  statement {
+    sid = "AllowKinesisDeliveryStreamAccessCWE"
+    actions = [
+      "firehose:PutRecord",
+    "firehose:PutRecordBatch"]
+    effect    = "Allow"
+    resources = [aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn]
   }
+
   dynamic "statement" {
     for_each = aws_kinesis_firehose_delivery_stream.cloudtrail_events_firehose
 
@@ -583,7 +589,6 @@ data "aws_iam_policy_document" "s3_bucket_cmk" {
     }
   }
 }
-
 resource "aws_iam_role" "cloudwatch_to_firehose_trust" {
   count       = var.cloudwatchlogs_rules == "true" ? 1 : 0
   name        = "${var.name}-CWLtoKinesisFirehoseRole"

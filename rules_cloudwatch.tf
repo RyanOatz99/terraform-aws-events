@@ -15,7 +15,7 @@ resource "aws_cloudwatch_event_target" "autoscaling" {
   count     = var.autoscaling_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.autoscaling[0].name
   target_id = "AutoScalingToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -36,7 +36,7 @@ resource "aws_cloudwatch_event_target" "batch" {
   count     = var.batch_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.batch[0].name
   target_id = "BatchToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -57,7 +57,7 @@ resource "aws_cloudwatch_event_target" "cloudwatch_scheduled_events" {
   count     = var.cloudwatch_scheduled_events_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.cloudwatch_scheduled_events[0].name
   target_id = "CWSchedEventsToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -78,7 +78,7 @@ resource "aws_cloudwatch_event_target" "codebuild" {
   count     = var.codebuild_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.codebuild[0].name
   target_id = "CodebuiltToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -99,7 +99,7 @@ resource "aws_cloudwatch_event_target" "codecommit" {
   count     = var.codecommit_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.codecommit[0].name
   target_id = "CodecommitToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -120,7 +120,7 @@ resource "aws_cloudwatch_event_target" "codedeploy" {
   count     = var.codedeploy_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.codedeploy[0].name
   target_id = "CodeDeployToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -141,7 +141,7 @@ resource "aws_cloudwatch_event_target" "codepipeline" {
   count     = var.codepipeline_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.codepipeline[0].name
   target_id = "CodePipelineToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -162,7 +162,7 @@ resource "aws_cloudwatch_event_target" "config" {
   count     = var.config_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.config[0].name
   target_id = "ConfigToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -183,7 +183,7 @@ resource "aws_cloudwatch_event_target" "dlm" {
   count     = var.dlm_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.dlm[0].name
   target_id = "DLMToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -204,7 +204,7 @@ resource "aws_cloudwatch_event_target" "ec2" {
   count     = var.ec2_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.ec2[0].name
   target_id = "EC2ToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -225,7 +225,7 @@ resource "aws_cloudwatch_event_target" "ecs" {
   count     = var.ecs_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.ecs[0].name
   target_id = "ECSToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -246,7 +246,7 @@ resource "aws_cloudwatch_event_target" "emr" {
   count     = var.emr_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.emr[0].name
   target_id = "EMRToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -267,7 +267,7 @@ resource "aws_cloudwatch_event_target" "glue" {
   count     = var.glue_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.glue[0].name
   target_id = "GlueToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -288,7 +288,7 @@ resource "aws_cloudwatch_event_target" "health" {
   count     = var.health_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.health[0].name
   target_id = "HealthToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -309,7 +309,7 @@ resource "aws_cloudwatch_event_target" "kms" {
   count     = var.kms_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.kms[0].name
   target_id = "KMSToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -330,7 +330,7 @@ resource "aws_cloudwatch_event_target" "macie" {
   count     = var.macie_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.macie[0].name
   target_id = "MacieToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -351,7 +351,7 @@ resource "aws_cloudwatch_event_target" "mediaconvert" {
   count     = var.mediaconvert_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.mediaconvert[0].name
   target_id = "MediaConvertToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -372,7 +372,7 @@ resource "aws_cloudwatch_event_target" "medialive" {
   count     = var.medialive_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.medialive[0].name
   target_id = "MediaLiveToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -393,7 +393,7 @@ resource "aws_cloudwatch_event_target" "mediastore" {
   count     = var.mediastore_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.mediastore[0].name
   target_id = "MediaStoreToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -414,7 +414,7 @@ resource "aws_cloudwatch_event_target" "opsworks" {
   count     = var.opsworks_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.opsworks[0].name
   target_id = "OpsWorksToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -435,7 +435,7 @@ resource "aws_cloudwatch_event_target" "signer" {
   count     = var.signer_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.signer[0].name
   target_id = "SignerToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -456,7 +456,7 @@ resource "aws_cloudwatch_event_target" "sms" {
   count     = var.sms_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.sms[0].name
   target_id = "SMSoFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -477,7 +477,7 @@ resource "aws_cloudwatch_event_target" "ssm" {
   count     = var.ssm_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.ssm[0].name
   target_id = "SSMoFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -498,7 +498,7 @@ resource "aws_cloudwatch_event_target" "storagegateway" {
   count     = var.storagegateway_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.storagegateway[0].name
   target_id = "StorageGatewayToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -519,7 +519,7 @@ resource "aws_cloudwatch_event_target" "transcribe" {
   count     = var.transcribe_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.transcribe[0].name
   target_id = "TranscribeToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
 
@@ -540,6 +540,6 @@ resource "aws_cloudwatch_event_target" "workspaces" {
   count     = var.workspaces_rules == "true" ? 1 : 0
   rule      = aws_cloudwatch_event_rule.workspaces[0].name
   target_id = "WorkSpacesToFirehose"
-  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events[0].arn
+  arn       = aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn
   role_arn  = aws_iam_role.firehose_delivery.arn
 }
