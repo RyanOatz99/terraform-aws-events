@@ -583,7 +583,7 @@ data "aws_iam_policy_document" "s3_bucket_cmk" {
 
     principals {
       identifiers = ["arn:aws:iam::${locals.account}:user/ci",
-      "arn:aws:iam::${locals.account}:role/ci",
+        "arn:aws:iam::${locals.account}:role/ci",
       "arn:aws:iam::${locals.account}:role/administrator"]
       type = "AWS"
     }
