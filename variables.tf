@@ -587,3 +587,8 @@ variable "csat_subscription_filter_pattern" {
   default     = "" # nothing is being filtered
 }
 
+variable "dev_account" {
+  description = "A flag to identify if this is a dev Account"
+  default     = "false"
+  type        = string
+}

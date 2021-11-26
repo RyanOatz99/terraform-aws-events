@@ -128,7 +128,7 @@ def createReingestionRecord(isSas, originalRecord):
 
 
 def handler(event, context):
-    config = json.loads(ssm_client.get_parameter(Name='/pm/processor/config', WithDecryption=True)['Parameter']['Value'])
+    config = json.loads(ssm_client.get_parameter(Name='/pm/processor/config-dev-evnt', WithDecryption=True)['Parameter']['Value'])
     # print("EVENT:")
     # print(event)
     # print("CONTEXT:")
