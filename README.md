@@ -17,6 +17,8 @@ modules_[AWS_ACCOUNT_NAME].tf
     name    = "[AWS_ACCOUNT_NAME]-events"
     index   = "Splunk index name"
 
+    dev_account = "true"
+
     # Enable whole-service Rules
     securityhub_rules = "true"
     guardduty_rules   = "true"
@@ -202,315 +204,321 @@ Inputs:
 
 name
 -
-    The name of the Event<br>
-    default = ""<br>
+    The name of the Event
+    default = ""
     type = string
 
 
 cloudwatchevents_hec_token
 -
-    CloudWatch Events HEC Token for use with Splunk Endpoint<br>
-    default     = ""<br>
+    CloudWatch Events HEC Token for use with Splunk Endpoint
+    default     = ""
     type        = string
 
 cloudtrail_hec_token
 -
-    CloudTrail HEC Token for use with Splunk Endpoint<br>
-    default     = ""<br>
+    CloudTrail HEC Token for use with Splunk Endpoint
+    default     = ""
+    type        = string
+
+dev_account
+-
+    Set to "true" if target is a development Account
+    default     = "false"
     type        = string
 
 guardduty_hec_token
 -
-    GuardDuty HEC Token for use with Splunk Endpoint<br>
-    default     = ""<br>
+    GuardDuty HEC Token for use with Splunk Endpoint
+    default     = ""
     type        = string
 
 securityhub_hec_token
 -
-    SecurityHub HEC Token for use with Splunk Endpoint<br>
-    default     = ""<br>
+    SecurityHub HEC Token for use with Splunk Endpoint
+    default     = ""
     type        = string
 
 cloudwatchlogs_hec_token
 -
-    CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
-    default     = ""<br>
+    CloudWatch Log Group HEC Token for use with Splunk Endpoint
+    default     = ""
     type        = string
 
 metadataserver_cloudwatchlogs_hec_token
 -
-    CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
-    default     = ""<br>
+    CloudWatch Log Group HEC Token for use with Splunk Endpoint
+    default     = ""
     type        = string
 
 linux_audit_cloudwatchlogs_hec_token
 -
-    CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
-    default     = ""<br>
+    CloudWatch Log Group HEC Token for use with Splunk Endpoint
+    default     = ""
     type        = string
 
 linux_syslog_cloudwatchlogs_hec_token
 -
-    CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
-    default     = ""<br>
+    CloudWatch Log Group HEC Token for use with Splunk Endpoint
+    default     = ""
     type        = string
 
 linux_secure_cloudwatchlogs_hec_token
 -
-    CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
-    default     = ""<br>
+    CloudWatch Log Group HEC Token for use with Splunk Endpoint
+    default     = ""
     type        = string
 
 linux_storagegw_cloudwatchlogs_hec_token
 -
-    CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
-    default     = ""<br>
+    CloudWatch Log Group HEC Token for use with Splunk Endpoint
+    default     = ""
     type        = string
 
 ssm_cloudwatchlogs_hec_token
 -
-    CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
-    default     = ""<br>
+    CloudWatch Log Group HEC Token for use with Splunk Endpoint
+    default     = ""
     type        = string
 
 linux_messages_cloudwatchlogs_hec_token
 -
-    CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
-    default     = ""<br>
+    CloudWatch Log Group HEC Token for use with Splunk Endpoint
+    default     = ""
     type        = string
 
 sasworkspace_cloudwatchlogs_hec_token
 -
-    CloudWatch Log Group HEC Token for use with Splunk Endpoint<br>
-    default     = ""<br>
+    CloudWatch Log Group HEC Token for use with Splunk Endpoint
+    default     = ""
     type        = string
 
 splunk_endpoint
 -
-    Endpoint address for Splunk<br>
-    default     = ""<br>
-    type        = string<br>
+    Endpoint address for Splunk
+    default     = ""
+    type        = string
 
 guardduty_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 securityhub_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 cloudtrail_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 autoscaling_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 batch_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 cloudwatch_scheduled_events_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 codebuild_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 codecommit_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 codedeploy_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 codepipeline_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 config_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 dlm_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 ec2_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 ecs_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 emr_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 glue_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 health_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 kms_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 macie_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 mediaconvert_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 medialive_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 mediastore_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 opsworks_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 signer_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 sms_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 ssm_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 storagegateway_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 transcribe_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 workspaces_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 linux_audit_cloudwatchlogs_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 linux_messages_cloudwatch_logs_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 metadataserver_cloudwatchlogs_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 storagegw_cloudwatchlogs_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 linux_secure_cloudwatchlogs_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 ssm_cloudwatchlogs_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 sasworkspace_cloudwatchlogs_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 cloudwatchlogs_rules
 -
-    True if the resource Rules should be enabled.<br>
-    default = "false"<br>
+    True if the resource Rules should be enabled.
+    default = "false"
     type = string
 
 CloudWatch Log Group Variables

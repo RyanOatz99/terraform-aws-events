@@ -250,7 +250,7 @@ data "aws_iam_policy_document" "firehose_backup_s3_access" {
       "kms:ReEncrypt"
     ]
     effect    = "Allow"
-    resources = [aws_kms_key.events_firehose_backups.id]
+    resources = [aws_kms_key.events_firehose_backups.arn]
   }
 
   statement {
@@ -582,10 +582,28 @@ data "aws_iam_policy_document" "s3_bucket_cmk" {
     resources = ["*"]
 
     principals {
-      identifiers = ["arn:aws:iam::${locals.account}:user/ci",
-        "arn:aws:iam::${locals.account}:role/ci",
-      "arn:aws:iam::${locals.account}:role/administrator"]
+      identifiers = [
+        "arn:aws:iam::${local.account}:user/breakglass",
+        "arn:aws:iam::${local.account}:role/ci",
+      ]
       type = "AWS"
+    }
+  }
+  dynamic "statement" {
+    for_each = var.dev_account ? [1] : [0]
+
+    content {
+      sid       = "EnableIAMPermissionsCIUserDevAccountOnly"
+      effect    = "Allow"
+      actions   = ["kms:*"]
+      resources = ["*"]
+
+      principals {
+        identifiers = [
+          "arn:aws:iam::${local.account}:role/administrator",
+        ]
+        type = "AWS"
+      }
     }
   }
 }
