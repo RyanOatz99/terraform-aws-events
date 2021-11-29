@@ -12,6 +12,11 @@ resource "aws_s3_bucket" "events_firehose_backups" {
   }
 }
 
+resource "aws_s3_bucket_policy" "events_firehose_backups" {
+  bucket = aws_s3_bucket.events_firehose_backups.id
+  policy = data.aws_iam_policy_document.events_firehose_backups.json
+}
+
 resource "aws_s3_bucket_public_access_block" "events_firehose_backups" {
   bucket                  = aws_s3_bucket.events_firehose_backups.id
   block_public_acls       = true
