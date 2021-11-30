@@ -4,10 +4,12 @@ resource "aws_lambda_function" "default_processing_lambda" {
   function_name    = "${var.name}-default-log-processor"
   role             = aws_iam_role.events_processor.arn
   handler          = "processor.handler"
+#  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
+  publish          = true
   environment {
     variables = {
       TZ = "Europe/London"
@@ -15,26 +17,26 @@ resource "aws_lambda_function" "default_processing_lambda" {
   }
 }
 
-data "template_file" "lambda_zip" {
+data "template_file" "lambda_template" {
   template = file("${path.module}/files/processor.py.tpl")
   vars = {
     module_name = var.name
   }
 }
 
-resource "local_file" "lambda_py" {
-  content  = data.template_file.lambda_zip.rendered
-  filename = "${path.module}/files/processor.py"
-}
+#resource "local_file" "lambda_py" {
+#  content  = data.template_file.lambda_template.rendered
+#  filename = "${path.module}/files/processor.py"
+#}
 
 data "archive_file" "lambda_zip" {
   type        = "zip"
   output_path = "${path.module}/files/processor.zip"
-  source_file = "${path.module}/files/processor.py"
-
-  depends_on = [
-    local_file.lambda_py
-  ]
+  source_content = data.template_file.lambda_template.rendered
+  source_content_filename = "processor.py"
+#  depends_on = [
+#    local_file.lambda_pym
+#  ]
 }
 
 resource "aws_lambda_function" "cloudwatch_events_processor" {
@@ -46,6 +48,7 @@ resource "aws_lambda_function" "cloudwatch_events_processor" {
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
+
 }
 resource "aws_lambda_function" "cloudwatchlogs_processor" {
   count            = var.cloudwatchlogs_rules == "true" ? 1 : 0
@@ -57,6 +60,7 @@ resource "aws_lambda_function" "cloudwatchlogs_processor" {
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
+
   environment {
     variables = {
       TZ = "Europe/London"
@@ -74,6 +78,7 @@ resource "aws_lambda_function" "cloudtrail_events_processor" {
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
+
 }
 
 resource "aws_lambda_function" "guardduty_events_processor" {
@@ -86,6 +91,7 @@ resource "aws_lambda_function" "guardduty_events_processor" {
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
+
 }
 
 resource "aws_lambda_function" "securityhub_events_processor" {
@@ -98,6 +104,7 @@ resource "aws_lambda_function" "securityhub_events_processor" {
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
+
 }
 
 resource "aws_lambda_function" "vpcflowlogs_processor" {
@@ -110,6 +117,7 @@ resource "aws_lambda_function" "vpcflowlogs_processor" {
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
+
 }
 
 resource "aws_lambda_function" "linux_audit_cloudwatchlogs_processor" {
@@ -122,6 +130,7 @@ resource "aws_lambda_function" "linux_audit_cloudwatchlogs_processor" {
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
+
   environment {
     variables = {
       TZ = "Europe/London"
@@ -139,6 +148,7 @@ resource "aws_lambda_function" "linux_syslog_cloudwatchlogs_processor" {
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
+
   environment {
     variables = {
       TZ = "Europe/London"
@@ -156,6 +166,7 @@ resource "aws_lambda_function" "metadataserver_cloudwatchlogs_processor" {
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
+
   environment {
     variables = {
       TZ = "Europe/London"
@@ -173,6 +184,7 @@ resource "aws_lambda_function" "storagegw_cloudwatchlogs_processor" {
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
+
   environment {
     variables = {
       TZ = "Europe/London"
@@ -190,6 +202,7 @@ resource "aws_lambda_function" "linux_secure_cloudwatchlogs_processor" {
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
+
   environment {
     variables = {
       TZ = "Europe/London"
@@ -207,6 +220,7 @@ resource "aws_lambda_function" "ssm_cloudwatchlogs_processor" {
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
+
   environment {
     variables = {
       TZ = "Europe/London"
@@ -224,6 +238,7 @@ resource "aws_lambda_function" "sasworkspace_cloudwatchlogs_processor" {
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
+
   environment {
     variables = {
       TZ = "Europe/London"

@@ -75,6 +75,7 @@ resource "aws_lambda_function" "denodo_vdp_queries_cloudwatch_logs_processor" {
   runtime          = "python3.8"
   timeout          = 300
   memory_size      = 512
+
   environment {
     variables = {
       TZ = "Europe/London"

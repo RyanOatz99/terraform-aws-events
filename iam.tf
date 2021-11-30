@@ -590,7 +590,7 @@ data "aws_iam_policy_document" "s3_bucket_cmk" {
     }
   }
   dynamic "statement" {
-    for_each = var.dev_account ? [1] : [0]
+    for_each = var.dev_account == "true" ? [""] : []
 
     content {
       sid       = "EnableIAMPermissionsCIUserDevAccountOnly"
@@ -601,6 +601,23 @@ data "aws_iam_policy_document" "s3_bucket_cmk" {
       principals {
         identifiers = [
           "arn:aws:iam::${local.account}:role/administrator",
+        ]
+        type = "AWS"
+      }
+    }
+  }
+  dynamic "statement" {
+    for_each = var.dev_account == "false" ? [""] : []
+
+    content {
+      sid       = "EnableIAMPermissionsCIUserAdminReadOnly"
+      effect    = "Allow"
+      actions   = ["kms:*"]
+      resources = ["*"]
+
+      principals {
+        identifiers = [
+          "arn:aws:iam::${local.account}:role/administrator-read-only",
         ]
         type = "AWS"
       }
