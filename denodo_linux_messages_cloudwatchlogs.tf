@@ -67,7 +67,7 @@ resource "aws_cloudwatch_log_stream" "denodo_linux_messages_cloudwatch_logs_fire
 
 resource "aws_lambda_function" "denodo_linux_messages_cloudwatch_logs_processor" {
   count            = var.denodo_linux_messages_cloudwatch_logs_rules == "true" ? 1 : 0
-  filename         = "${path.module}/files/processor.zip"
+  filename         = data.archive_file.lambda_zip.output_path
   function_name    = "${var.name}-denodo-linux-messages-CloudWatchlogs-Processor"
   role             = aws_iam_role.events_processor.arn
   handler          = "processor.handler"
