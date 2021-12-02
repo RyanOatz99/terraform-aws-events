@@ -25,7 +25,7 @@ data "template_file" "lambda_template" {
 
 data "archive_file" "lambda_zip" {
   type                    = "zip"
-  output_path             = "${path.cwd}/files/processor.zip"
+  output_path             = "./files/processor.zip"
   source_content          = data.template_file.lambda_template.rendered
   source_content_filename = "processor.py"
 }
@@ -43,7 +43,7 @@ resource "aws_lambda_function" "cloudwatch_events_processor" {
 
 data "archive_file" "cloudwatch_events_processor_lambda_zip" {
   type                    = "zip"
-  output_path             = "${path.cwd}/files/cloudwatch_events_processor.zip"
+  output_path             = "./files/cloudwatch_events_processor.zip"
   source_content          = "${path.module}/files/cloudwatch_events_processor.py"
   source_content_filename = "processor.py"
 }
@@ -80,7 +80,7 @@ resource "aws_lambda_function" "cloudtrail_events_processor" {
 
 data "archive_file" "cloudtrail_events_processor_lambda_zip" {
   type                    = "zip"
-  output_path             = "${path.cwd}/files/cloudtrail_events_processor.zip"
+  output_path             = "./files/cloudtrail_events_processor.zip"
   source_content          = "${path.module}/files/cloudtrail_events_processor.py"
   source_content_filename = "processor.py"
 }
@@ -99,7 +99,7 @@ resource "aws_lambda_function" "guardduty_events_processor" {
 
 data "archive_file" "guardduty_events_processor_lambda_zip" {
   type                    = "zip"
-  output_path             = "${path.cwd}/files/guardduty_events_processor.zip"
+  output_path             = "./files/guardduty_events_processor.zip"
   source_content          = "${path.module}/files/guardduty_events_processor.py"
   source_content_filename = "processor.py"
 }
@@ -118,7 +118,7 @@ resource "aws_lambda_function" "securityhub_events_processor" {
 
 data "archive_file" "securityhub_events_processor_lambda_zip" {
   type                    = "zip"
-  output_path             = "${path.cwd}/files/securityhub_events_processor.zip"
+  output_path             = "./files/securityhub_events_processor.zip"
   source_content          = "${path.module}/files/securityhub_events_processor.py"
   source_content_filename = "processor.py"
 }
@@ -137,7 +137,7 @@ resource "aws_lambda_function" "vpcflowlogs_processor" {
 
 data "archive_file" "vpcflowlogs_processor_lambda_zip" {
   type                    = "zip"
-  output_path             = "${path.cwd}/files/vpcflowlogs_processor.zip"
+  output_path             = "./files/vpcflowlogs_processor.zip"
   source_content          = "${path.module}/files/vpcflowlogs_processor.py"
   source_content_filename = "processor.py"
 }
@@ -198,7 +198,7 @@ resource "aws_lambda_function" "metadataserver_cloudwatchlogs_processor" {
 
 data "archive_file" "metadataserver_cloudwatchlogs_processor_lambda_zip" {
   type                    = "zip"
-  output_path             = "${path.cwd}/files/metadataserver_cloudwatchlogs_processor.zip"
+  output_path             = "./files/metadataserver_cloudwatchlogs_processor.zip"
   source_content          = "${path.module}/files/metadataserver_cloudwatchlogs_processor.py"
   source_content_filename = "processor.py"
 }
@@ -223,7 +223,7 @@ resource "aws_lambda_function" "storagegw_cloudwatchlogs_processor" {
 
 data "archive_file" "storagegw_cloudwatchlogs_processor_lambda_zip" {
   type                    = "zip"
-  output_path             = "${path.cwd}/files/storagegw_cloudwatchlogs_processor.zip"
+  output_path             = "./files/storagegw_cloudwatchlogs_processor.zip"
   source_content          = "${path.module}/files/storagegw_cloudwatchlogs_processor.py"
   source_content_filename = "processor.py"
 }
@@ -266,7 +266,7 @@ resource "aws_lambda_function" "ssm_cloudwatchlogs_processor" {
 
 data "archive_file" "ssm_cloudwatchlogs_processor_lambda_zip" {
   type                    = "zip"
-  output_path             = "${path.cwd}/files/ssm_cloudwatchlogs_processor.zip"
+  output_path             = "./files/ssm_cloudwatchlogs_processor.zip"
   source_content          = "${path.module}/files/ssm_cloudwatchlogs_processor.py"
   source_content_filename = "processor.py"
 }
@@ -292,7 +292,7 @@ resource "aws_lambda_function" "sasworkspace_cloudwatchlogs_processor" {
 
 data "archive_file" "sasworkspace_cloudwatchlogs_processor_lambda_zip" {
   type                    = "zip"
-  output_path             = "${path.cwd}/files/sasworkspace_cloudwatchlogs_processor.zip"
+  output_path             = "./files/sasworkspace_cloudwatchlogs_processor.zip"
   source_content          = "${path.module}/files/sasworkspace_cloudwatchlogs_processor.py"
   source_content_filename = "processor.py"
 }
