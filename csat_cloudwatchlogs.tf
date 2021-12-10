@@ -67,7 +67,7 @@ resource "aws_cloudwatch_log_stream" "csat_cloudwatch_logs_firehose" {
 
 resource "aws_lambda_function" "csat_cloudwatch_logs_processor" {
   count         = var.csat_cloudwatch_logs_rules == "true" ? 1 : 0
-  filename      = data.archive_file.default_lambda_zip.output_path
+  filename      = "${path.module}/files/processor.zip"
   function_name = "${var.name}-csat-CloudWatchlogs-Processor"
   role          = aws_iam_role.events_processor.arn
   handler       = "processor.handler"

@@ -67,7 +67,7 @@ resource "aws_cloudwatch_log_stream" "denodo_vdp_connections_cloudwatch_logs_fir
 
 resource "aws_lambda_function" "denodo_vdp_connections_cloudwatch_logs_processor" {
   count         = var.denodo_vdp_connections_cloudwatch_logs_rules == "true" ? 1 : 0
-  filename      = data.archive_file.default_lambda_zip.output_path
+  filename      = "${path.module}/files/processor.zip"
   function_name = "${var.name}-denodo-vdp-connections-CloudWatchlogs-Processor"
   role          = aws_iam_role.events_processor.arn
   handler       = "processor.handler"
