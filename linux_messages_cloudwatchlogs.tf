@@ -67,7 +67,7 @@ resource "aws_cloudwatch_log_stream" "linux_messages_cloudwatch_logs_firehose" {
 
 resource "aws_lambda_function" "linux_messages_cloudwatch_logs_processor" {
   count         = var.linux_messages_cloudwatch_logs_rules == "true" ? 1 : 0
-  filename      = data.archive_file.default_lambda_zip[0].output_path
+  filename      = data.archive_file.default_lambda_zip.output_path
   function_name = "${var.name}-linux-messages-CloudWatchlogs-Processor"
   role          = aws_iam_role.events_processor.arn
   handler       = "processor.handler"

@@ -14,9 +14,7 @@ if IS_PY3:
 else:
     import StringIO
 
-
 ssm_client = boto3.client('ssm')
-
 
 def transformLogEvent(log_event, source, owner, config, streamName):
     return_message = "EVENT_NOT_FOUND"
