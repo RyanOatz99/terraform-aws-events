@@ -562,7 +562,6 @@ data "aws_iam_policy_document" "events_firehose_backups" {
       values   = ["false"]
       variable = "aws:SecureTransport"
     }
-
   }
 }
 
