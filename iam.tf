@@ -542,6 +542,29 @@ data "aws_iam_policy_document" "firehose_lambda_access" {
   }
 }
 
+data "aws_iam_policy_document" "events_firehose_backups" {
+  statement {
+    sid     = "DenyUnsecuredTransport"
+    effect  = "Deny"
+    actions = ["*"]
+    resources = [
+      aws_s3_bucket.events_firehose_backups.arn,
+      "${aws_s3_bucket.events_firehose_backups.arn}/*",
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    condition {
+      test     = "Bool"
+      values   = ["false"]
+      variable = "aws:SecureTransport"
+    }
+  }
+}
+
 resource "aws_iam_policy" "firehose_lambda_access" {
   name   = "${var.name}FirehoseLambdaAccess"
   path   = "/events/"
@@ -556,6 +579,30 @@ resource "aws_iam_role_policy_attachment" "firehose_lambda_access" {
 resource "aws_iam_role_policy_attachment" "firehose_lambda_execution" {
   role       = aws_iam_role.events_processor.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+data "aws_iam_policy_document" "events_firehose_backups" {
+  statement {
+    sid     = "DenyUnsecuredTransport"
+    effect  = "Deny"
+    actions = ["*"]
+    resources = [
+      aws_s3_bucket.events_firehose_backups.arn,
+      "${aws_s3_bucket.events_firehose_backups.arn}/*",
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    condition {
+      test     = "Bool"
+      values   = ["false"]
+      variable = "aws:SecureTransport"
+    }
+
+  }
 }
 
 data "aws_iam_policy_document" "s3_bucket_cmk" {
