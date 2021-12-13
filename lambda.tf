@@ -22,13 +22,20 @@ data "template_file" "default_lambda_template" {
     module_name = var.name
   }
 }
+resource "local_file" "lambda_py" {
+  content  = data.template_file.default_lambda_template[0].rendered
+  filename = "${path.module}/files/processor.py"
+}
 
 data "archive_file" "default_lambda_zip" {
-  count                   = var.default_processing_lambda == "true" ? 1 : 0
-  type                    = "zip"
-  output_path             = "${path.module}/files/processor.zip"
-  source_content          = data.template_file.default_lambda_template[0].rendered
-  source_content_filename = "${path.module}/files/processor.py"
+  count       = var.default_processing_lambda == "true" ? 1 : 0
+  type        = "zip"
+  output_path = "${path.module}/files/processor.zip"
+  source_file = "${path.module}/files/processor.py"
+
+  depends_on = [
+    local_file.lambda_py
+  ]
 }
 
 resource "aws_lambda_function" "cloudwatch_events_processor" {
@@ -39,6 +46,20 @@ resource "aws_lambda_function" "cloudwatch_events_processor" {
   runtime       = "python3.8"
   timeout       = 300
   memory_size   = 512
+}
+
+data "template_file" "cloudwatch_events_processor_lambda_template" {
+  template = file("${path.module}/files/cloudwatch_events_processor.py.tpl")
+  vars = {
+    module_name = var.name
+  }
+}
+
+data "archive_file" "cloudwatch_events_processor_lambda_zip" {
+  type                    = "zip"
+  output_path             = "${path.module}/files/cloudwatch_events_processor.zip"
+  source_content          = data.template_file.cloudwatch_events_processor_lambda_template.rendered
+  source_content_filename = "processor.py"
 }
 
 resource "aws_lambda_function" "cloudwatchlogs_processor" {
@@ -75,6 +96,13 @@ data "template_file" "cloudtrail_events_processor_lambda_template" {
   vars = {
     module_name = var.name
   }
+}
+
+data "archive_file" "cloudtrail_events_processor_lambda_zip" {
+  type                    = "zip"
+  output_path             = "${path.module}/files/cloudtrail_events_processor.zip"
+  source_content          = data.template_file.cloudtrail_events_processor_lambda_template.rendered
+  source_content_filename = "processor.py"
 }
 
 resource "aws_lambda_function" "guardduty_events_processor" {
@@ -115,6 +143,22 @@ resource "aws_lambda_function" "securityhub_events_processor" {
   memory_size   = 512
 }
 
+data "template_file" "securityhub_events_processor_lambda_template" {
+  count    = var.securityhub_rules == "true" ? 1 : 0
+  template = file("${path.module}/files/securityhub_events_processor.py.tpl")
+  vars = {
+    module_name = var.name
+  }
+}
+
+data "archive_file" "securityhub_events_processor_lambda_zip" {
+  count                   = var.securityhub_rules == "true" ? 1 : 0
+  type                    = "zip"
+  output_path             = "${path.module}/files/securityhub_events_processor.zip"
+  source_content          = data.template_file.securityhub_events_processor_lambda_template[0].rendered
+  source_content_filename = "processor.py"
+}
+
 resource "aws_lambda_function" "vpcflowlogs_processor" {
   count         = var.vpcflowlogs_rules == "true" ? 1 : 0
   filename      = "${path.module}/files/vpcflowlogs_processor.zip"
@@ -126,6 +170,21 @@ resource "aws_lambda_function" "vpcflowlogs_processor" {
   memory_size   = 512
 }
 
+data "template_file" "vpcflowlogs_processor_lambda_template" {
+  count    = var.vpcflowlogs_rules == "true" ? 1 : 0
+  template = file("${path.module}/files/vpcflowlogs_processor.py.tpl")
+  vars = {
+    module_name = var.name
+  }
+}
+
+data "archive_file" "vpcflowlogs_processor_lambda_zip" {
+  count                   = var.vpcflowlogs_rules == "true" ? 1 : 0
+  type                    = "zip"
+  output_path             = "${path.module}/files/vpcflowlogs_processor.zip"
+  source_content          = data.template_file.vpcflowlogs_processor_lambda_template[0].rendered
+  source_content_filename = "processor.py"
+}
 resource "aws_lambda_function" "linux_audit_cloudwatchlogs_processor" {
   count         = var.linux_audit_cloudwatchlogs_rules == "true" ? 1 : 0
   filename      = "${path.module}/files/processor.zip"
