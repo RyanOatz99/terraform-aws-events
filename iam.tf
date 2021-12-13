@@ -565,6 +565,11 @@ data "aws_iam_policy_document" "events_firehose_backups" {
   }
 }
 
+resource "aws_s3_bucket_policy" "events_firehose_backups" {
+  bucket = aws_s3_bucket.events_firehose_backups.id
+  policy = data.aws_iam_policy_document.events_firehose_backups.json
+}
+
 resource "aws_iam_policy" "firehose_lambda_access" {
   name   = "${var.name}FirehoseLambdaAccess"
   path   = "/events/"
