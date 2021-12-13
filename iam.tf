@@ -542,6 +542,29 @@ data "aws_iam_policy_document" "firehose_lambda_access" {
   }
 }
 
+data "aws_iam_policy_document" "events_firehose_backups" {
+  statement {
+    sid     = "DenyUnsecuredTransport"
+    effect  = "Deny"
+    actions = ["*"]
+    resources = [
+      aws_s3_bucket.events_firehose_backups.arn,
+      "${aws_s3_bucket.events_firehose_backups.arn}/*",
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    condition {
+      test     = "Bool"
+      values   = ["false"]
+      variable = "aws:SecureTransport"
+    }
+  }
+}
+
 resource "aws_iam_policy" "firehose_lambda_access" {
   name   = "${var.name}FirehoseLambdaAccess"
   path   = "/events/"
