@@ -310,7 +310,7 @@ data "aws_iam_policy_document" "firehose_delivery_access" {
     sid = "AllowKinesisDeliveryStreamAccessCWE"
     actions = [
       "firehose:PutRecord",
-      "firehose:PutRecordBatch"]
+    "firehose:PutRecordBatch"]
     effect    = "Allow"
     resources = [aws_kinesis_firehose_delivery_stream.cloudwatch_events.arn]
   }
