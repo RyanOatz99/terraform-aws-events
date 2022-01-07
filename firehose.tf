@@ -39,6 +39,11 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudwatch_events" {
 
       }
     }
+    cloudwatch_logging_options {
+      enabled         = true
+      log_group_name  = aws_cloudwatch_log_group.cloudwatch_events_firehose.name
+      log_stream_name = aws_cloudwatch_log_stream.cloudwatch_events_firehose.name
+    }
   }
 }
 
@@ -92,6 +97,11 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudtrail_events_firehose" {
         }
 
       }
+    }
+    cloudwatch_logging_options {
+      enabled         = true
+      log_group_name  = aws_cloudwatch_log_group.cloudtrail_events_firehose[0].name
+      log_stream_name = aws_cloudwatch_log_stream.cloudtrail_events_firehose[0].name
     }
   }
 }
@@ -149,6 +159,11 @@ resource "aws_kinesis_firehose_delivery_stream" "guardduty_events_firehose" {
 
       }
     }
+    cloudwatch_logging_options {
+      enabled         = true
+      log_group_name  = aws_cloudwatch_log_group.guardduty_events_firehose[0].name
+      log_stream_name = aws_cloudwatch_log_stream.guardduty_events_firehose[0].name
+    }
   }
 }
 
@@ -204,6 +219,11 @@ resource "aws_kinesis_firehose_delivery_stream" "securityhub_events_firehose" {
         }
 
       }
+    }
+    cloudwatch_logging_options {
+      enabled         = true
+      log_group_name  = aws_cloudwatch_log_group.securityhub_events_firehose[0].name
+      log_stream_name = aws_cloudwatch_log_stream.securityhub_events_firehose[0].name
     }
   }
 }
@@ -261,6 +281,11 @@ resource "aws_kinesis_firehose_delivery_stream" "cloudwatchlogs_firehose" {
 
       }
     }
+    cloudwatch_logging_options {
+      enabled         = true
+      log_group_name  = aws_cloudwatch_log_group.cloudwatchlogs_firehose[0].name
+      log_stream_name = aws_cloudwatch_log_stream.cloudwatchlogs_firehose[0].name
+    }
   }
 }
 
@@ -316,6 +341,11 @@ resource "aws_kinesis_firehose_delivery_stream" "vpcflowlogs_firehose" {
         }
 
       }
+    }
+    cloudwatch_logging_options {
+      enabled         = true
+      log_group_name  = aws_cloudwatch_log_group.vpcflowlogs_firehose[0].name
+      log_stream_name = aws_cloudwatch_log_stream.vpcflowlogs_firehose[0].name
     }
   }
 }
@@ -373,6 +403,11 @@ resource "aws_kinesis_firehose_delivery_stream" "linux_audit_cloudwatchlogs_fire
 
       }
     }
+    cloudwatch_logging_options {
+      enabled         = true
+      log_group_name  = aws_cloudwatch_log_group.linux_audit_cloudwatchlogs_firehose[0].name
+      log_stream_name = aws_cloudwatch_log_stream.linux_audit_cloudwatchlogs_firehose[0].name
+    }
   }
 }
 
@@ -428,6 +463,11 @@ resource "aws_kinesis_firehose_delivery_stream" "linux_syslog_cloudwatchlogs_fir
         }
 
       }
+    }
+    cloudwatch_logging_options {
+      enabled         = true
+      log_group_name  = aws_cloudwatch_log_group.linux_syslog_cloudwatchlogs_firehose[0].name
+      log_stream_name = aws_cloudwatch_log_stream.linux_syslog_cloudwatchlogs_firehose[0].name
     }
   }
 }
@@ -485,6 +525,11 @@ resource "aws_kinesis_firehose_delivery_stream" "metadataserver_cloudwatchlogs_f
 
       }
     }
+    cloudwatch_logging_options {
+      enabled         = true
+      log_group_name  = aws_cloudwatch_log_group.metadataserver_cloudwatchlogs_firehose[0].name
+      log_stream_name = aws_cloudwatch_log_stream.metadataserver_cloudwatchlogs_firehose[0].name
+    }
   }
 }
 
@@ -540,6 +585,11 @@ resource "aws_kinesis_firehose_delivery_stream" "storagegw_cloudwatchlogs_fireho
         }
 
       }
+    }
+    cloudwatch_logging_options {
+      enabled         = true
+      log_group_name  = aws_cloudwatch_log_group.storagegw_cloudwatchlogs_firehose[0].name
+      log_stream_name = aws_cloudwatch_log_stream.storagegw_cloudwatchlogs_firehose[0].name
     }
   }
 }
@@ -597,6 +647,11 @@ resource "aws_kinesis_firehose_delivery_stream" "linux_secure_cloudwatchlogs_fir
 
       }
     }
+    cloudwatch_logging_options {
+      enabled         = true
+      log_group_name  = aws_cloudwatch_log_group.linux_secure_cloudwatchlogs_firehose[0].name
+      log_stream_name = aws_cloudwatch_log_stream.linux_secure_cloudwatchlogs_firehose[0].name
+    }
   }
 }
 
@@ -653,6 +708,11 @@ resource "aws_kinesis_firehose_delivery_stream" "ssm_cloudwatchlogs_firehose" {
 
       }
     }
+    cloudwatch_logging_options {
+      enabled         = true
+      log_group_name  = aws_cloudwatch_log_group.ssm_cloudwatchlogs_firehose[0].name
+      log_stream_name = aws_cloudwatch_log_stream.ssm_cloudwatchlogs_firehose[0].name
+    }
   }
 }
 
@@ -708,6 +768,11 @@ resource "aws_kinesis_firehose_delivery_stream" "sasworkspace_cloudwatchlogs_fir
         }
 
       }
+    }
+    cloudwatch_logging_options {
+      enabled         = true
+      log_group_name  = aws_cloudwatch_log_group.sasworkspace_cloudwatchlogs_firehose[0].name
+      log_stream_name = aws_cloudwatch_log_stream.sasworkspace_cloudwatchlogs_firehose[0].name
     }
   }
 }

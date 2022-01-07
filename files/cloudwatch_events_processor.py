@@ -5,41 +5,24 @@ import sys
 
 IS_PY3 = sys.version_info[0] == 3
 
-def transformLogEvent(log_event, source):
-    """Transform each log event.
-
-    The default implementation below just extracts the message and appends a newline to it.
-
-    Args:
-    log_event (dict): The original log event. Structure is {"id": str, "timestamp": long, "message": str}
-
-    Returns:
-    str: The transformed log event.
-    """
-    return_event = {}
-    return_event['sourcetype'] = 'aws:cloudwatchlogs'
-    return_event['source'] = source
-    return_event['event'] = log_event['message']
-    return json.dumps(return_event) + '\n'
-
-
 def processRecords(records):
     for r in records:
         data = json.loads(base64.b64decode(r['data']))
         recId = r['recordId']
         return_event = {}
-        # Setting a default `sourcetype` in case not caught by anything else
-        st = data['source'].replace(".", ":") + "aws:firehose:cloudwatchevents"
+        # st = data['source'].replace(".", ":") + "aws:firehose:cloudwatchevents"
+
         config_findings = 0
         cloudtrail_findings = 0
         securityhub_findings = 0
         guardduty_findings = 0
         other_findings = 0
 
-        print(f"data[detail-type]: {data['detail-type']}")
-        print(f"data[source]: {data['source']}")
+        #print(f"data[detail-type]: {data['detail-type']}")
+        #print(f"data[source]: {data['source']}")
 
         # Others
+
         if (data['source'] == 'aws.batch'):
             st = 'aws:firehose:cloudwatchevents'
             other_findings += 1
@@ -105,8 +88,8 @@ def processRecords(records):
             other_findings += 1
 
         if (data['detail-type'] == 'Macie Alert'):
-           st = 'aws:firehose:cloudwatchevents'
-           other_findings += 1
+            st = 'aws:firehose:cloudwatchevents'
+            other_findings += 1
 
         if ((data['detail-type'] == 'MediaStore Object State Change') or (data['detail-type'] == 'MediaStore Container State Change')):
             st = 'aws:firehose:cloudwatchevents'
@@ -159,16 +142,36 @@ def processRecords(records):
             st = 'aws:cloudtrail'
             cloudtrail_findings += 1
 
+        # return_event['timestamp'] = data['time']
+        # return_event['time'] = data['time']
+        return_event['sourcetype'] = st
+        return_event['source'] = data['source']
+        return_event['event'] = data['detail']
+        print(return_event)
+
+        # print(data['detail'])
+        # print(data['source'])
+        # print(data['time'])
+        # print(return_event)
+
         if IS_PY3:
             # base64 encode api changes in python3 to operate exclusively on byte-like objects and bytes
             data = base64.b64encode(json.dumps(return_event).encode('utf-8')).decode()
         else:
             data = base64.b64encode(json.dumps(return_event))
-        yield {
-            'data': data,
-            'result': 'Ok',
-            'recordId': recId
-        }
+
+        if len(data) <= 600000:
+            yield {
+                'data': data,
+                'result': 'Ok',
+                'recordId': recId
+            }
+        else:
+            yield {
+                'result': 'ProcessingFailed',
+                'recordId': recId
+            }
+
 
 
 def putRecordsToFirehoseStream(streamName, records, client, attemptsMade, maxAttempts):
@@ -183,26 +186,21 @@ def putRecordsToFirehoseStream(streamName, records, client, attemptsMade, maxAtt
     except Exception as e:
         failedRecords = records
         errMsg = str(e)
-
     # if there are no failedRecords (put_record_batch succeeded), iterate over the response to gather results
     if not failedRecords and response and response['FailedPutCount'] > 0:
         for idx, res in enumerate(response['RequestResponses']):
             # (if the result does not have a key 'ErrorCode' OR if it does and is empty) => we do not need to re-ingest
             if 'ErrorCode' not in res or not res['ErrorCode']:
                 continue
-
             codes.append(res['ErrorCode'])
             failedRecords.append(records[idx])
-
         errMsg = 'Individual error codes: ' + ','.join(codes)
-
     if len(failedRecords) > 0:
         if attemptsMade + 1 < maxAttempts:
             print('Some records failed while calling PutRecordBatch to Firehose stream, retrying. %s' % (errMsg))
             putRecordsToFirehoseStream(streamName, failedRecords, client, attemptsMade + 1, maxAttempts)
         else:
             raise RuntimeError('Could not put records after %s attempts. %s' % (str(maxAttempts), errMsg))
-
 
 def putRecordsToKinesisStream(streamName, records, client, attemptsMade, maxAttempts):
     failedRecords = []
@@ -216,45 +214,33 @@ def putRecordsToKinesisStream(streamName, records, client, attemptsMade, maxAtte
     except Exception as e:
         failedRecords = records
         errMsg = str(e)
-
     # if there are no failedRecords (put_record_batch succeeded), iterate over the response to gather results
     if not failedRecords and response and response['FailedRecordCount'] > 0:
         for idx, res in enumerate(response['Records']):
             # (if the result does not have a key 'ErrorCode' OR if it does and is empty) => we do not need to re-ingest
             if 'ErrorCode' not in res or not res['ErrorCode']:
                 continue
-
             codes.append(res['ErrorCode'])
             failedRecords.append(records[idx])
-
         errMsg = 'Individual error codes: ' + ','.join(codes)
-
     if len(failedRecords) > 0:
         if attemptsMade + 1 < maxAttempts:
             print('Some records failed while calling PutRecords to Kinesis stream, retrying. %s' % (errMsg))
             putRecordsToKinesisStream(streamName, failedRecords, client, attemptsMade + 1, maxAttempts)
         else:
             raise RuntimeError('Could not put records after %s attempts. %s' % (str(maxAttempts), errMsg))
-
-
 def createReingestionRecord(isSas, originalRecord):
     if isSas:
         return {'data': base64.b64decode(originalRecord['data']), 'partitionKey': originalRecord['kinesisRecordMetadata']['partitionKey']}
     else:
         return {'data': base64.b64decode(originalRecord['data'])}
-
-
 def getReingestionRecord(isSas, reIngestionRecord):
     if isSas:
         return {'Data': reIngestionRecord['data'], 'PartitionKey': reIngestionRecord['partitionKey']}
     else:
         return {'Data': reIngestionRecord['data']}
 
-
 def handler(event, context):
-    # print('Lambda invoked...')
-    # print('Event:')
-    # print(event)
     isSas = 'sourceKinesisStreamArn' in event
     streamARN = event['sourceKinesisStreamArn'] if isSas else event['deliveryStreamArn']
     region = streamARN.split(':')[3]
@@ -265,7 +251,6 @@ def handler(event, context):
     putRecordBatches = []
     recordsToReingest = []
     totalRecordsToBeReingested = 0
-
     for idx, rec in enumerate(records):
         if rec['result'] != 'Ok':
             continue
@@ -278,16 +263,13 @@ def handler(event, context):
             )
             records[idx]['result'] = 'Dropped'
             del(records[idx]['data'])
-
         # split out the record batches into multiple groups, 500 records at max per group
         if len(recordsToReingest) == 500:
             putRecordBatches.append(recordsToReingest)
             recordsToReingest = []
-
     if len(recordsToReingest) > 0:
         # add the last batch
         putRecordBatches.append(recordsToReingest)
-
     # iterate and call putRecordBatch for each group
     recordsReingestedSoFar = 0
     if len(putRecordBatches) > 0:
@@ -301,5 +283,4 @@ def handler(event, context):
             print('Reingested %d/%d records out of %d' % (recordsReingestedSoFar, totalRecordsToBeReingested, len(event['records'])))
     else:
         print('No records to be reingested')
-
     return {"records": records}

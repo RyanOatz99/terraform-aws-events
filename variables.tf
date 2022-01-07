@@ -40,9 +40,9 @@ variable "cloudwatch_events_rules" {
   type        = string
 }
 
-variable "default_processing_lamba" {
+variable "default_processing_lambda" {
   description = "True if the default Lambda Rules should be enabled."
-  default     = "false"
+  default     = "true"
   type        = string
 }
 
