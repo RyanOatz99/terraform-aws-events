@@ -3,6 +3,11 @@ data "aws_caller_identity" "current" {}
 locals {
   account = data.aws_caller_identity.current.account_id
 
+  ci_principals = coalescelist(var.ci_principals, [
+    "arn:aws:iam::${local.account}:user/ci",
+    "arn:aws:iam::${local.account}:role/ci",
+  ])
+
   processing_lambda_config = {
     patterns = [
       {

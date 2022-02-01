@@ -614,12 +614,8 @@ data "aws_iam_policy_document" "s3_bucket_cmk" {
     resources = ["*"]
 
     principals {
-      identifiers = [
-        #        "arn:aws:iam::${local.account}:user/breakglass",
-        "arn:aws:iam::${local.account}:user/ci",
-        "arn:aws:iam::${local.account}:role/ci",
-      ]
-      type = "AWS"
+      identifiers = local.ci_principals
+      type        = "AWS"
     }
   }
   dynamic "statement" {
