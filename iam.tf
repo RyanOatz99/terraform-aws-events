@@ -592,11 +592,13 @@ data "aws_iam_policy_document" "s3_bucket_cmk" {
     effect = "Allow"
     #    actions = ["kms:*"]
     actions = [
+      "kms:Create",
       "kms:Encrypt",
       "kms:ListKeys",
       "kms:DescribeKeys",
       "kms:ReEncrypt",
       "kms:Decrypt",
+      "kms:Put*",
       "kms:GenerateDataKey*",
       "kms:DescribeKey"
     ]
