@@ -607,15 +607,18 @@ data "aws_iam_policy_document" "s3_bucket_cmk" {
       type        = "AWS"
     }
   }
-  statement {
-    sid       = "EnableIAMPermissionsCIUser"
-    effect    = "Allow"
-    actions   = ["kms:*"]
-    resources = ["*"]
+  dynamic "statement" {
+    for_each = var.ci_account == "true" ? [""] : []
+    content {
+      sid       = "EnableIAMPermissionsCIUser"
+      effect    = "Allow"
+      actions   = ["kms:*"]
+      resources = ["*"]
 
-    principals {
-      identifiers = local.ci_principals
-      type        = "AWS"
+      principals {
+        identifiers = local.ci_principals
+        type        = "AWS"
+      }
     }
   }
   dynamic "statement" {

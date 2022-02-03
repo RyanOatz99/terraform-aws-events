@@ -593,6 +593,12 @@ variable "dev_account" {
   type        = string
 }
 
+variable "ci_account" {
+  description = "A flag to identify if this is a CI Account"
+  default     = "true"
+  type        = string
+}
+
 variable "ci_principals" {
   description = "A list of principals that should be assigned CI user IAM policies"
   default     = []
