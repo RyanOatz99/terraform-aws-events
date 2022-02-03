@@ -18,6 +18,7 @@ modules_[AWS_ACCOUNT_NAME].tf
     index   = "Splunk index name"
 
     dev_account = "true"
+    ci_account  = "true"
 
     # Enable whole-service Rules
     securityhub_rules = "true"
@@ -226,6 +227,18 @@ dev_account
     Set to "true" if target is a development Account
     default     = "false"
     type        = string
+
+ci_account
+-
+    Set to "true" if CI user IAM policy is to be created
+    default     = "true"
+    type        = string
+
+ci_principals
+-
+    Allows a consumer to override the default CI account principals
+    default     = []
+    type        = list(string)
 
 guardduty_hec_token
 -
